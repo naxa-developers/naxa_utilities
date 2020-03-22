@@ -18,8 +18,8 @@ class Command(BaseCommand):
 
         # try:
         #     for row in range(0, upper_range):
-        #         print((df['Number_of_ICU_Wards'][row]))
-        #         print(int(df['Remaining_Capacity'][row]))
+        #         print(float(df['Latitude'][row]))
+        #         print(float(df['Longitude'][row]))
         #         print(df['SN'][row])
         #
         #         # type = MedicalFacilityType.objects.get(name=str((df['Type'][row]))),
