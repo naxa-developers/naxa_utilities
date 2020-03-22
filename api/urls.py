@@ -5,4 +5,5 @@ urlpatterns = [
     path('health-facility/', views.MedicalApi.as_view({'get': 'list'}), name='health-facility'),
     path('health-category/', views.MedicalCategoryApi.as_view({'get': 'list'}), name='health-category'),
     path('health-type/', views.MedicalTypeApi.as_view({'get': 'list'}), name='health-type'),
+    path('cases/', views.CaseApi.as_view({'get': 'list'}), name='cases'),
 ]
