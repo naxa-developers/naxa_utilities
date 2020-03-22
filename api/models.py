@@ -39,3 +39,11 @@ class MedicalFacility(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class CovidCases(models.Model):
+    total_tested = models.IntegerField(null=True, blank=True, default=0)
+    tested_positive = models.IntegerField(null=True, blank=True, default=0)
+    tested_negative = models.IntegerField(null=True, blank=True, default=0)
+    death = models.IntegerField(null=True, blank=True, default=0)
+    date = models.DateField(null=True, blank=True)
