@@ -24,8 +24,6 @@ SECRET_KEY = 'j964770!a#auu4o+($fu)&c7s%+^q!cjudcyrzz-($%7os!n$1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
 # Application definition
 
 INSTALLED_APPS = [
@@ -36,9 +34,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'django.contrib.gis',
+    'corsheaders',
     'rest_framework',
     'rest_framework_swagger',
-    'api'
+    'api',
 
 ]
 
