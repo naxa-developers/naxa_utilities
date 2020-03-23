@@ -10,6 +10,6 @@ services:
     volumes:
       - .:/code
     ports:
-      - "8020:8000"
+      - "8021:8000"
     external_links:
-     - psql-11-sakchyam_db:db
+     - naxa_utilities:db
