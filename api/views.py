@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets, views
 from .serializers import MedicalFacilitySerializer, MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
-    CaseSerializer
-from .models import MedicalFacility, MedicalFacilityType, MedicalFacilityCategory, CovidCases
+    CaseSerializer, ProvinceSerializer, ProvinceDataSerializer
+from .models import MedicalFacility, MedicalFacilityType, MedicalFacilityCategory, CovidCases, Province, ProvinceData
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -63,4 +63,34 @@ class CaseApi(viewsets.ReadOnlyModelViewSet):
 
     def get_serializer_class(self):
         serializer_class = CaseSerializer
+        return serializer_class
+
+
+class ProvinceApi(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['id', ]
+
+    def get_queryset(self):
+        queryset = Province.objects.order_by('id')
+        return queryset
+
+    def get_serializer_class(self):
+        serializer_class = ProvinceSerializer
+        return serializer_class
+
+
+class ProvinceDataApi(viewsets.ReadOnlyModelViewSet):
+    permission_classes = [AllowAny]
+
+    # filter_backends = [DjangoFilterBackend]
+    # filterset_fields = ['id', ]
+
+    def get_queryset(self):
+        queryset = ProvinceData.objects.order_by('id')
+        return queryset
+
+    def get_serializer_class(self):
+        serializer_class = ProvinceDataSerializer
         return serializer_class

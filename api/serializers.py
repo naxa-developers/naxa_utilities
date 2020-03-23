@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import MedicalFacility, MedicalFacilityCategory, MedicalFacilityType, CovidCases
+from .models import MedicalFacility, MedicalFacilityCategory, MedicalFacilityType, CovidCases, Province, ProvinceData
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
@@ -25,4 +25,16 @@ class MedicalFacilitySerializer(serializers.ModelSerializer):
 class CaseSerializer(serializers.ModelSerializer):
     class Meta:
         model = CovidCases
+        fields = "__all__"
+
+
+class ProvinceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Province
+        fields = "__all__"
+
+
+class ProvinceDataSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ProvinceData
         fields = "__all__"
