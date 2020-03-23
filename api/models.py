@@ -47,3 +47,26 @@ class CovidCases(models.Model):
     tested_negative = models.IntegerField(null=True, blank=True, default=0)
     death = models.IntegerField(null=True, blank=True, default=0)
     date = models.DateField(null=True, blank=True)
+
+
+class Province(models.Model):
+    province_id = models.CharField(max_length=300, null=True, blank=True)
+    name = models.CharField(max_length=300, null=True, blank=True)
+
+    def __str__(self):
+        return self.name
+
+
+class ProvinceData(models.Model):
+    province_id = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='Province')
+    num_of_isolation_ward = models.IntegerField(null=True, blank=True, default=0)
+    num_of_icu = models.IntegerField(null=True, blank=True, default=0)
+    num_of_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    num_of_occupied_isolation_ward = models.IntegerField(null=True, blank=True, default=0)
+    num_of_occupied_icu = models.IntegerField(null=True, blank=True, default=0)
+    num_of_occupied_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    total_tested = models.IntegerField(null=True, blank=True, default=0)
+    total_confirmed = models.IntegerField(null=True, blank=True, default=0)
+    total_recovered = models.IntegerField(null=True, blank=True, default=0)
+    total_death = models.IntegerField(null=True, blank=True, default=0)
+    date = models.DateField(null=True, blank=True)
