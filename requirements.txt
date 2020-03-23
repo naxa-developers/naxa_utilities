@@ -11,3 +11,4 @@ pandas
 pillow
 django-cors-headers
 django-debug-toolbar==2.2
+gunicorn==20.0.4
