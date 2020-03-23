@@ -3,9 +3,15 @@ from .models import MedicalFacility, MedicalFacilityCategory, MedicalFacilityTyp
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
+    type = serializers.SerializerMethodField()
+
     class Meta:
         model = MedicalFacilityCategory
-        fields = "__all__"
+        fields = ('id', 'name', 'type')
+
+    def get_type(self, obj):
+        qs = obj.Category.all().order_by('id').values('id', 'name')
+        return qs
 
 
 class MedicalFacilityTypeSerializer(serializers.ModelSerializer):
