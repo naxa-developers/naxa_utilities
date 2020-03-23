@@ -51,8 +51,8 @@ coverage.xml
 
 # Docker
 docker-compose.yml
-dockrt-entrypoint.local.sh
 postgres-data
+Dockerfile
 
 #IDE
 .idea
