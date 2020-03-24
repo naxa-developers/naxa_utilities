@@ -14,8 +14,6 @@ router.register(r'health-facility', views.MedicalApi)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('stats/<int:pk>', views.StatsAPI.as_view(
-        {'get': 'retrieve', 'put': 'update'})),
     path('stats/', views.StatsAPI.as_view(
-        {'get': 'list', 'post': 'create'})),
+        {'get': 'list'})),
 ]

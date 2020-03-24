@@ -35,10 +35,10 @@ HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
 
 # Create your views here.
 class StatsAPI(viewsets.ModelViewSet):
-    queryset = MedicalFacility.objects.all()
-    serializer_class = MedicalFacilitySerializer
+    queryset = ProvinceData.objects.all()
+    serializer_class = ProvinceSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id', 'type']
+    filterset_fields = ['id', 'province_id']
 
     def get_permissions(self):
         """
@@ -51,10 +51,10 @@ class StatsAPI(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def list(self, request):
-        queryset = MedicalFacility.objects.all()
+        queryset = ProvinceData.objects.filter(active=True)
         province = self.request.query_params.get('province')
         if province:
-            queryset = queryset.filter(province=province)
+            queryset = queryset.filter(province_id=province)
         else:
             province = "0"
         hotline = HOTLINES.get(province, {})
