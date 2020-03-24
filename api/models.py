@@ -42,9 +42,9 @@ class Municipality(models.Model):
 
 class MedicalFacility(models.Model):
     OWNERSHIP_CHOICES = (
-        ('0', 'UNKNOWN'),
-        ('1', 'GOVERNMENT'),
-        ('2', 'PRIVATE'),
+        ('0', 'Unknown'),
+        ('1', 'Government'),
+        ('2', 'Private'),
 
     )
     province = models.ForeignKey(Province, on_delete=models.CASCADE,

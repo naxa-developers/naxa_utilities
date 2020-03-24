@@ -36,7 +36,7 @@ HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
 # Create your views here.
 class StatsAPI(viewsets.ModelViewSet):
     queryset = ProvinceData.objects.all()
-    serializer_class = ProvinceSerializer
+    serializer_class = ProvinceDataSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['id', 'province_id']
 
@@ -53,6 +53,10 @@ class StatsAPI(viewsets.ModelViewSet):
     def list(self, request):
         queryset = ProvinceData.objects.filter(active=True)
         province = self.request.query_params.get('province')
+        if province == "all":
+            data = ProvinceDataSerializer(queryset, many=True).data
+            return Response(data)
+
         if province:
             queryset = queryset.filter(province_id=province)
         else:

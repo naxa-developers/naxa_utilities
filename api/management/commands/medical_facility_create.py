@@ -11,56 +11,43 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         path = kwargs['path']
-
+        ownership_dict = dict(MedicalFacility.OWNERSHIP_CHOICES)
+        ownership_replace = {y: x for x, y in ownership_dict.items()}
+        ownership_replace['NAN'] = "0"
         df = pd.read_csv(path)
         upper_range = len(df)
+        df.fillna({'ownership': "0", 'Longitude': 85.3240, 'Latitude': 85.3240,
+                   'No_of_Beds': 0, 'Number_of_ICU_Wards':0,
+                   'Number_of_Ventilators': 0, 'Number_of_Isolation_Beds':0,
+                   'Remaining_Capacity': 0, 'Used_for_Corona_Response':False,
+                   'Type':"Hospital"},
+                  inplace=True)
+        df.replace({"ownership": ownership_replace}, inplace=True)
+        df.replace({"Used_for_Corona_Response": {"Yes": True,
+                                                 'No': False}}, inplace=True)
         print("Wait Data is being Loaded")
+        medical_fac = [
+            MedicalFacility(
+                type=MedicalFacilityType.objects.get(name=str((df[
+                    'Type'][
+                    row]))),
+                category=MedicalFacilityCategory.objects.get(name=str((df[
+                    'Category'][
+                    row]))),
+                name=str(df['Name of Facility'][row]),
+                ownership=str(df['Type_of_Ownership'][row]),
+                contact_num=str(df['Contact_No'][row]),
+                used_for_corona_response=df['Used_for_Corona_Response'][row],
+                num_of_bed=int(df['No_of_Beds'][row]),
+                num_of_ventilators=int(df['Number_of_Ventilators'][row]),
+                num_of_isolation_bed=int(df['Number_of_Isolation_Beds'][row]),
+                remarks=str(df['Remarks'][row]),
+                lat=float(df['Latitude'][row]),
+                long=float(df['Longitude'][row]),
 
-        # try:
-        #     for row in range(0, upper_range):
-        #         print(float(df['Latitude'][row]))
-        #         print(float(df['Longitude'][row]))
-        #         print(df['SN'][row])
-        #
-        #         # type = MedicalFacilityType.objects.get(name=str((df['Type'][row]))),
-        #
-        #     if palika_update:
-        #         self.stdout.write('Successfully  updated data ..')
-        #
-        #
-        # except Exception as e:
-        #     print(e)
+            ) for row in range(0, upper_range)
+        ]
+        medical = MedicalFacility.objects.bulk_create(medical_fac)
 
-        try:
-            medical_fac = [
-                MedicalFacility(
-                    type=MedicalFacilityType.objects.get(name=str((df['Type'][row]))),
-                    name=str(df['Name of Facility'][row]),
-                    ownership=str(df['Type_of_Ownership'][row]),
-                    contact_num=str(df['Contact_No'][row]),
-                    is_used_for_Corona_response=str(df['Used_for_Corona_Response'][row]),
-                    num_of_bed=int(df['No_of_Beds'][row]),
-                    num_of_icu_ward=int(df['Number_of_ICU_Wards'][row]),
-                    num_of_ventilators=int(df['Number_of_Ventilators'][row]),
-                    num_of_isolation_ward=int(df['Number_of_Isolation_Wards'][row]),
-                    remaining_capacity=int(df['Remaining_Capacity'][row]),
-                    remarks=str(df['Remarks'][row]),
-                    lat=float(df['Latitude'][row]),
-                    long=float(df['Longitude'][row]),
-
-                ) for row in range(0, upper_range)
-            ]
-            medical = MedicalFacility.objects.bulk_create(medical_fac)
-
-            if medical:
-                self.stdout.write('Successfully loaded Medical Value  ..')
-                # print((df['paulika_name'][row]).capitalize())
-                # a = GapaNapa.objects.get(name=str((df['paulika_name'][row]).capitalize().strip()))
-                # print(a)
-                # print((df['indicators'][row]).strip())
-                # a = Indicator.objects.get(indicator=str((df['indicators'][row]).strip()))
-                # print(a)
-
-
-        except Exception as e:
-            print(e)
+        if medical:
+            self.stdout.write('Successfully loaded Medical Value  ..')
