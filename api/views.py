@@ -1,14 +1,36 @@
 from django.db.models import Sum
 from django.shortcuts import render
 from rest_framework import viewsets, views
-from .serializers import MedicalFacilitySerializer, MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
-    CaseSerializer, ProvinceSerializer, ProvinceDataSerializer
-from .models import MedicalFacility, MedicalFacilityType, MedicalFacilityCategory, CovidCases, Province, ProvinceData
+from .serializers import MedicalFacilitySerializer, \
+    MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
+    CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
+    DistrictSerializer, MunicipalitySerializer
+from .models import MedicalFacility, MedicalFacilityType, \
+    MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
+    District
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
 
 from rest_framework.response import Response
+
+HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            1: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            2: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            3: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            4: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            5: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            6: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            7: {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            }
 
 
 # Create your views here.
@@ -33,6 +55,9 @@ class StatsAPI(viewsets.ModelViewSet):
         province = self.request.query_params.get('province')
         if province:
             queryset = queryset.filter(province=province)
+        else:
+            province = "0"
+        hotline = HOTLINES.get(province, {})
         data = queryset.aggregate(
             tested=Sum('total_tested'),
             confirmed=Sum('total_positive'),
@@ -45,12 +70,12 @@ class StatsAPI(viewsets.ModelViewSet):
             isolation_bed=Sum('num_of_isolation_bed'),
             occupied_isolation_bed=Sum('occupied_ventilators'),
         )
+        data.update(hotline)
         return Response(data)
 
 
-
 class MedicalApi(viewsets.ModelViewSet):
-    queryset = MedicalFacility.objects.order_by('id')
+    queryset = MedicalFacility.objects.all()
     serializer_class = MedicalFacilitySerializer
 
     filter_backends = [DjangoFilterBackend]
@@ -117,6 +142,36 @@ class CaseApi(viewsets.ModelViewSet):
 class ProvinceApi(viewsets.ModelViewSet):
     queryset = Province.objects.order_by('id')
     serializer_class = ProvinceSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class MunicipalityApi(viewsets.ModelViewSet):
+    queryset = Municipality.objects.order_by('id')
+    serializer_class = MunicipalitySerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class DistrictApi(viewsets.ModelViewSet):
+    queryset = District.objects.order_by('id')
+    serializer_class = DistrictSerializer
 
     def get_permissions(self):
         """

@@ -1,5 +1,7 @@
 from rest_framework import serializers
-from .models import MedicalFacility, MedicalFacilityCategory, MedicalFacilityType, CovidCases, Province, ProvinceData
+from .models import MedicalFacility, MedicalFacilityCategory, \
+    MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
+    Municipality
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
@@ -21,6 +23,8 @@ class MedicalFacilityTypeSerializer(serializers.ModelSerializer):
 
 
 class MedicalFacilitySerializer(serializers.ModelSerializer):
+    ownership_display = serializers.CharField(source="get_ownership_display",
+                                           read_only=True)
     class Meta:
         model = MedicalFacility
         # fields = ('name', 'id', 'num_of_bed', 'contact_num', 'is_used_for_Corona_response', 'num_of_icu_ward',
@@ -37,6 +41,18 @@ class CaseSerializer(serializers.ModelSerializer):
 class ProvinceSerializer(serializers.ModelSerializer):
     class Meta:
         model = Province
+        fields = "__all__"
+
+
+class DistrictSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = District
+        fields = "__all__"
+
+
+class MunicipalitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Municipality
         fields = "__all__"
 
 
