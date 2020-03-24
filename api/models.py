@@ -1,5 +1,6 @@
 import datetime
 from django.contrib.gis.db import models
+from django.contrib.gis.geos import Point
 
 
 class MedicalFacilityCategory(models.Model):
@@ -85,8 +86,11 @@ class MedicalFacility(models.Model):
         return self.name
 
     def save(self, *args, **kwargs):
-        self.lat = self.location.y
-        self.long = self.location.x
+        if self.location:
+            self.lat = self.location.y
+            self.long = self.location.x
+        elif self.lat and self.long:
+            self.location = Point(x=self.long, y=self.lat, srid=4326)
         super(MedicalFacility, self).save(*args, **kwargs)
 
 
