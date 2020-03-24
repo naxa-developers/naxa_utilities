@@ -11,9 +11,9 @@ admin.site.register(Province)
 
 
 class ProvinceDataAdmin(admin.ModelAdmin):
-    list_filter = ('province_id', 'date')
-    list_display = ('province_id', 'date')
-    search_fields = ('province_id', 'date')
+    list_filter = ('id', 'update_date', 'active')
+    list_display = ('id', 'update_date', 'active', 'province_id')
+    search_fields = ('id', 'update_date', 'active')
 
 
 class CovidCasesAdmin(admin.ModelAdmin):
@@ -22,7 +22,7 @@ class CovidCasesAdmin(admin.ModelAdmin):
     search_fields = ('date',)
 
 
-# admin.site.register(ProvinceData, ProvinceDataAdmin)
+admin.site.register(ProvinceData, ProvinceDataAdmin)
 # admin.site.register(CovidCases, CovidCasesAdmin)
 
 

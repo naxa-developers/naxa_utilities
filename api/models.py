@@ -1,3 +1,4 @@
+import datetime
 from django.contrib.gis.db import models
 
 
@@ -91,18 +92,28 @@ class MedicalFacility(models.Model):
 
 class ProvinceData(models.Model):
     province_id = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='Province')
-    num_of_isolation_ward = models.IntegerField(null=True, blank=True, default=0)
-    num_of_icu = models.IntegerField(null=True, blank=True, default=0)
+    num_of_bed = models.IntegerField(null=True, blank=True, default=0)
+    num_of_icu_bed = models.IntegerField(null=True, blank=True, default=0)
+    occupied_icu_bed = models.IntegerField(null=True, blank=True, default=0)
     num_of_ventilators = models.IntegerField(null=True, blank=True, default=0)
-    num_of_occupied_isolation_ward = models.IntegerField(null=True, blank=True, default=0)
-    num_of_occupied_icu = models.IntegerField(null=True, blank=True, default=0)
-    num_of_occupied_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    occupied_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
+    occupied_isolation_bed = models.IntegerField(null=True, blank=True,
+                                                 default=0)
     total_tested = models.IntegerField(null=True, blank=True, default=0)
-    total_confirmed = models.IntegerField(null=True, blank=True, default=0)
-    total_recovered = models.IntegerField(null=True, blank=True, default=0)
+    total_positive = models.IntegerField(null=True, blank=True, default=0)
     total_death = models.IntegerField(null=True, blank=True, default=0)
-    date = models.DateField(null=True, blank=True)
+    total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
+    active = models.BooleanField(default=True)
+    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            now = datetime.datetime.now()
+            province = self.province_id
+            ProvinceData.objects.filter(active=True, province_id=province).update(
+                active=False, update_date=now)
+        super().save(*args, **kwargs)
 
 class CovidCases(models.Model):
     total_tested = models.IntegerField(null=True, blank=True, default=0)
