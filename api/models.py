@@ -34,6 +34,9 @@ class Province(models.Model):
 
 class District(models.Model):
     name = models.CharField(max_length=300, null=True, blank=True)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE,
+                                 related_name='districts',
+                                 blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -41,6 +44,12 @@ class District(models.Model):
 
 class Municipality(models.Model):
     name = models.CharField(max_length=300, null=True, blank=True)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE,
+                                 related_name='municipalities',
+                                 blank=True, null=True)
+    district = models.ForeignKey(District, on_delete=models.CASCADE,
+                                 related_name='municipalities',
+                                 blank=True, null=True)
 
     def __str__(self):
         return self.name
