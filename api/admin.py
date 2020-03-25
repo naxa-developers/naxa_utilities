@@ -36,5 +36,8 @@ class MarkerAdmin(OSMGeoAdmin):
     default_lat = 27
     default_zoom = 15
     readonly_fields = ('lat', 'long')
+    list_filter = ('district', 'province', 'municipality')
+    list_display = ('name', 'district', 'province', 'municipality')
+    search_fields = ('district', 'province', 'municipality')
 
 admin.site.register(MedicalFacility, MarkerAdmin)
