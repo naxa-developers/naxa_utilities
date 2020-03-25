@@ -51,6 +51,8 @@ class MedicalFacility(models.Model):
         ('0', 'Unknown'),
         ('1', 'Government'),
         ('2', 'Private'),
+        ('3', 'Nepal Army'),
+        ('nan', 'Unknown'),
 
     )
     province = models.ForeignKey(Province, on_delete=models.CASCADE,

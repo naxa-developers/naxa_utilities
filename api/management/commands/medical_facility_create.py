@@ -14,6 +14,7 @@ class Command(BaseCommand):
         ownership_dict = dict(MedicalFacility.OWNERSHIP_CHOICES)
         ownership_replace = {y: x for x, y in ownership_dict.items()}
         ownership_replace['NAN'] = "0"
+        ownership_replace['nan'] = "0"
         df = pd.read_csv(path)
         upper_range = len(df)
         df.fillna({'ownership': "0", 'Longitude': 85.3240, 'Latitude': 85.3240,
