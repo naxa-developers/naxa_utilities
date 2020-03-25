@@ -25,6 +25,9 @@ class Command(BaseCommand):
                    'Remaining_Capacity': 0, 'Used_for_Corona_Response':False,
                    'Type':"Hospital"},
                   inplace=True)
+        municipalities = list(df.Municipality.unique())
+        for m in municipalities:
+            Municipality.objects.get_or_create(name=m)
         df.replace({"ownership": ownership_replace}, inplace=True)
         df.replace({"Used_for_Corona_Response": {"Yes": True,
                                                  'No': False}}, inplace=True)
