@@ -148,6 +148,48 @@ class UserRole(models.Model):
                                  blank=True, null=True)
 
 
+class UserLocation(models.Model):
+    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="location",
+                             on_delete=models.CASCADE)
+    location = models.PointField(srid=4326, blank=True, null=True)
+    lat = models.FloatField(null=True, blank=True, default=0)
+    long = models.FloatField(null=True, blank=True, default=0)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        if self.location:
+            self.lat = self.location.y
+            self.long = self.location.x
+        elif self.lat and self.long:
+            self.location = Point(x=self.long, y=self.lat, srid=4326)
+        super(UserLocation, self).save(*args, **kwargs)
+
+
+class UserReport(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="report",
+                             on_delete=models.CASCADE)
+    name = models.CharField(max_length=255)
+    address = models.CharField(max_length=255)
+    contact_no = models.CharField(max_length=255)
+    symptoms = models.TextField(max_length=255)
+    travel_history = models.TextField(max_length=255)
+    location = models.PointField(srid=4326, blank=True, null=True)
+    lat = models.FloatField(null=True, blank=True, default=0)
+    long = models.FloatField(null=True, blank=True, default=0)
+    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+
+    def save(self, *args, **kwargs):
+        if self.location:
+            self.lat = self.location.y
+            self.long = self.location.x
+        elif self.lat and self.long:
+            self.location = Point(x=self.long, y=self.lat, srid=4326)
+        super(UserReport, self).save(*args, **kwargs)
+
+
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:

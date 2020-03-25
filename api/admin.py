@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, UserRole, \
-    Municipality, District
+    Municipality, District, UserLocation, UserReport
 
 from django.contrib.gis.admin import OSMGeoAdmin
 
@@ -13,6 +13,7 @@ admin.site.register(Province)
 admin.site.register(UserRole)
 admin.site.register(Municipality)
 admin.site.register(District)
+
 
 
 class ProvinceDataAdmin(admin.ModelAdmin):
@@ -44,3 +45,25 @@ class MarkerAdmin(OSMGeoAdmin):
     search_fields = ('district', 'province', 'municipality')
 
 admin.site.register(MedicalFacility, MarkerAdmin)
+
+
+class ReportAdmin(OSMGeoAdmin):
+    default_lon = 83
+    default_lat = 27
+    default_zoom = 15
+    readonly_fields = ('lat', 'long')
+    list_filter = ('user',)
+    list_display = ('user', 'lat', 'long')
+
+admin.site.register(UserReport, ReportAdmin)
+
+
+class UserLocationAdmin(OSMGeoAdmin):
+    default_lon = 83
+    default_lat = 27
+    default_zoom = 15
+    readonly_fields = ('lat', 'long')
+    list_filter = ('user',)
+    list_display = ('user', 'lat', 'long')
+
+admin.site.register(UserLocation, UserLocationAdmin)

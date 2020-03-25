@@ -2,10 +2,11 @@ from django.db.models import Sum
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
-    DistrictSerializer, MunicipalitySerializer, UserRoleSerializer
+    DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
+    UserLocationSerializer, UserReportSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
-    District
+    District, UserLocation, UserReport
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination
@@ -243,3 +244,39 @@ class CustomAuthToken(ObtainAuthToken):
             'email': user.email,
             'roles': UserRoleSerializer(roles, many=True).data
         })
+
+
+class UserLocationApi(viewsets.ModelViewSet):
+    queryset = UserLocation.objects.all()
+    serializer_class = UserLocationSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+
+class UserReportApi(viewsets.ModelViewSet):
+    queryset = UserReport.objects.all()
+    serializer_class = UserReportSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
