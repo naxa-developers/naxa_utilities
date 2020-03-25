@@ -3,6 +3,25 @@ from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
     Municipality
 
+HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "1": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "2": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "3": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "4": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "5": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "6": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            "7": {"phones" :["11111111", "22222222", "2222222"],
+                             'time': "9am - 6 PM"},
+            }
+
+
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
@@ -57,6 +76,15 @@ class MunicipalitySerializer(serializers.ModelSerializer):
 
 
 class ProvinceDataSerializer(serializers.ModelSerializer):
+    phones = serializers.SerializerMethodField()
+    time = serializers.SerializerMethodField()
+
     class Meta:
         model = ProvinceData
         fields = "__all__"
+
+    def get_phones(self, obj):
+        return HOTLINES[str(obj.id)]['phones']
+
+    def get_time(self, obj):
+        return HOTLINES[str(obj.id)]['time']

@@ -11,6 +11,7 @@ router.register(r'municipality', views.MunicipalityApi)
 router.register(r'health-type', views.MedicalTypeApi)
 router.register(r'health-category', views.MedicalCategoryApi) # left bar
 router.register(r'health-facility', views.MedicalApi)
+router.register(r'health-facility2', views.MedicalApi2)
 
 urlpatterns = [
     path('', include(router.urls)),

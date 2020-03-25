@@ -1,6 +1,5 @@
 from django.db.models import Sum
-from django.shortcuts import render
-from rest_framework import viewsets, views
+from rest_framework import viewsets, pagination
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
@@ -10,9 +9,13 @@ from .models import MedicalFacility, MedicalFacilityType, \
     District
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
-
-
 from rest_framework.response import Response
+
+
+class StandardResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 100
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
 
 HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
                              'time': "9am - 6 PM"},
@@ -81,6 +84,25 @@ class StatsAPI(viewsets.ModelViewSet):
 class MedicalApi(viewsets.ModelViewSet):
     queryset = MedicalFacility.objects.all()
     serializer_class = MedicalFacilitySerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['id', 'type']
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class MedicalApi2(viewsets.ModelViewSet):
+    queryset = MedicalFacility.objects.all()
+    serializer_class = MedicalFacilitySerializer
+    pagination_class = StandardResultsSetPagination
 
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['id', 'type']
