@@ -12,6 +12,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         path = kwargs['path']
+        MedicalFacility.objects.all().delete()
         ownership_dict = dict(MedicalFacility.OWNERSHIP_CHOICES)
         ownership_replace = {y: x for x, y in ownership_dict.items()}
         ownership_replace['NAN'] = "0"
