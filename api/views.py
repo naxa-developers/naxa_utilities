@@ -98,7 +98,8 @@ class MedicalApi(viewsets.ModelViewSet):
     serializer_class = MedicalFacilitySerializer
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id', 'type']
+    filterset_fields = ['id', 'type', 'municipality', 'district', 'province',
+                        'category']
 
     def get_permissions(self):
         """

@@ -89,4 +89,5 @@ ID,Name of Facility,Category,Type,Type_of_Ownership,Contact_Person,Contact_No,Us
 88,Sukraraj Tropical And Infectious Disease Hospital,Testing Labs,Testing Labs,Government,,01-4253395,Yes,,20,,100,,,27.6954492,85.3047526,Bagmati Province,Kathmandu,Kathmandu Mahanagarpalika,
 89,Nepal Armed Police Force Hospital,Medical Facilities,Quarantine Centers,Nepal Army,,,Yes,,20,,,,,27.69011,85.25215,Bagmati Province,Kathmandu,Chandragiri Nagarpalika,
 90,Humla District Hospital,Medical Facilities,Quarantine Centers,Government,,,Yes,,,,,,,29.967378,81.820902,Karnali Province,Humla,Simikot Gaunpalika,
-91,Mid-Western Regional Hospital,,,,,,,,,,,,,28.606293,81.600942,Karnali Province,Surkhet,Birendranagar Nagarpalika,
+91,Mid-Western Regional Hospital,Others,Others,,,,,,,,,,,28.606293,81.600942,Karnali Province,Surkhet,Birendranagar Nagarpalika,
+92,National Public Health Laboratory,Testing Labs,Testing Labs,Government,,14240217,,,,,,,,27.695618,85.3053741,Bagmati Province,Kathmandu,Kathmandu Mahanagarpalika,
