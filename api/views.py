@@ -39,6 +39,9 @@ HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
                              'time': "9am - 6 PM"},
             }
 
+NationalHotine = "9851255834, 9851255837, 9851255839 (8 AM – 8 PM), 1115 (6 " \
+                 "AM – 10 PM)"
+
 
 # Create your views here.
 class StatsAPI(viewsets.ModelViewSet):
@@ -60,14 +63,18 @@ class StatsAPI(viewsets.ModelViewSet):
     def list(self, request):
         queryset = ProvinceData.objects.filter(active=True)
         province = self.request.query_params.get('province')
+        facility_count = 0
         if province == "all":
             data = ProvinceDataSerializer(queryset, many=True).data
             return Response(data)
 
         if province:
             queryset = queryset.filter(province_id=province)
+            facility_count = MedicalFacility.objects.filter(
+                province=province).count()
         else:
             province = "0"
+            facility_count = MedicalFacility.objects.all().count()
         hotline = HOTLINES.get(province, {})
         data = queryset.aggregate(
             tested=Sum('total_tested'),
@@ -82,6 +89,8 @@ class StatsAPI(viewsets.ModelViewSet):
             occupied_isolation_bed=Sum('occupied_ventilators'),
         )
         data.update(hotline)
+        data.update({'facility_count': facility_count})
+        data.update({"hotline": NationalHotine})
         return Response(data)
 
 

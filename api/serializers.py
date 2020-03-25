@@ -78,6 +78,7 @@ class MunicipalitySerializer(serializers.ModelSerializer):
 class ProvinceDataSerializer(serializers.ModelSerializer):
     phones = serializers.SerializerMethodField()
     time = serializers.SerializerMethodField()
+    facility_count = serializers.SerializerMethodField()
 
     class Meta:
         model = ProvinceData
@@ -88,6 +89,9 @@ class ProvinceDataSerializer(serializers.ModelSerializer):
 
     def get_time(self, obj):
         return HOTLINES[str(obj.id)]['time']
+
+    def get_facility_count(self, obj):
+        return MedicalFacility.objects.filter(province=obj.province_id).count()
 
 
 class UserRoleSerializer(serializers.ModelSerializer):

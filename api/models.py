@@ -127,6 +127,7 @@ class ProvinceData(models.Model):
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
     update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    hotline = models.TextField()
 
     def save(self, *args, **kwargs):
         if not self.pk:
