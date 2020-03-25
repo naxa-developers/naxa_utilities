@@ -1,6 +1,7 @@
 from django.core.management.base import BaseCommand
 import pandas as pd
-from api.models import MedicalFacility, MedicalFacilityType, MedicalFacilityCategory
+from api.models import MedicalFacility, MedicalFacilityType, \
+    MedicalFacilityCategory, Province, Municipality, District
 
 
 class Command(BaseCommand):
@@ -34,6 +35,15 @@ class Command(BaseCommand):
                     row]))),
                 category=MedicalFacilityCategory.objects.get(name=str((df[
                     'Category'][
+                    row]))),
+                province=Province.objects.get(name=str((df[
+                    'Province'][
+                    row]))),
+                municipality=Municipality.objects.get(name=str((df[
+                    'Municipality'][
+                    row]))),
+                district=District.objects.get(name=str((df[
+                    'District'][
                     row]))),
                 name=str(df['Name of Facility'][row]),
                 ownership=str(df['Type_of_Ownership'][row]),
