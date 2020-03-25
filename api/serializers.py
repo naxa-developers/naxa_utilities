@@ -44,11 +44,42 @@ class MedicalFacilityTypeSerializer(serializers.ModelSerializer):
 class MedicalFacilitySerializer(serializers.ModelSerializer):
     ownership_display = serializers.CharField(source="get_ownership_display",
                                            read_only=True)
+    district_name = serializers.SerializerMethodField()
+    province_name = serializers.SerializerMethodField()
+    municipality_name = serializers.SerializerMethodField()
+    category_name = serializers.SerializerMethodField()
+    type_name = serializers.SerializerMethodField()
+
     class Meta:
         model = MedicalFacility
         # fields = ('name', 'id', 'num_of_bed', 'contact_num', 'is_used_for_Corona_response', 'num_of_icu_ward',
         #           'num_of_ventilators', 'num_of_isolation_ward', 'remaining_capacity', 'remarks', 'lat',)
         fields = "__all__"
+
+    def get_district_name(self, obj):
+        if obj.district:
+            return obj.district.name
+        return ""
+
+    def get_province_name(self, obj):
+        if obj.province:
+            return obj.province.name
+        return ""
+
+    def get_municipality_name(self, obj):
+        if obj.municipality:
+            return obj.municipality.name
+        return ""
+
+    def get_type_name(self, obj):
+        if obj.type:
+            return obj.type.name
+        return ""
+
+    def get_category_name(self, obj):
+        if obj.category:
+            return obj.category.name
+        return ""
 
 
 class CaseSerializer(serializers.ModelSerializer):

@@ -111,6 +111,9 @@ class MedicalApi(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
+    def get_queryset(self):
+        return self.queryset.select_related('type', 'municipality',
+                                            'district', 'province', 'category')
 
 class MedicalApi2(viewsets.ModelViewSet):
     queryset = MedicalFacility.objects.all()
