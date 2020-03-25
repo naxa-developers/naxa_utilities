@@ -3,10 +3,10 @@ from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
-    UserLocationSerializer, UserReportSerializer
+    UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
-    District, UserLocation, UserReport
+    District, UserLocation, UserReport, AgeGroupData
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination
@@ -39,8 +39,7 @@ HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
                              'time': "9am - 6 PM"},
             }
 
-NationalHotine = "9851255834, 9851255837, 9851255839 (8 AM – 8 PM), 1115 (6 " \
-                 "AM – 10 PM)"
+NationalHotine = "9851255834, 9851255837, 9851255839 :8 AM – 8 PM: 1115:(6 AM – 10 PM)"
 
 
 # Create your views here.
@@ -289,3 +288,19 @@ class UserReportApi(viewsets.ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
+
+
+class AgeGroupDataApi(viewsets.ModelViewSet):
+    queryset = AgeGroupData.objects.all()
+    serializer_class = AgeGroupDataSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+

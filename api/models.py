@@ -178,6 +178,21 @@ class UserLocation(models.Model):
         super(UserLocation, self).save(*args, **kwargs)
 
 
+class AgeGroupData(models.Model):
+    hlcit_code = models.CharField(max_length=63)
+    municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE,
+                                     related_name='age',
+                                     blank=True, null=True)
+    pcode = models.CharField(max_length=31)
+    district = models.ForeignKey(District, on_delete=models.CASCADE,
+                                 related_name='age', blank=True,
+                                 null=True)
+    l0_14 = models.IntegerField(default=0)
+    l15_49 = models.IntegerField(default=0)
+    l50plus = models.IntegerField(default=0)
+    ltotal = models.IntegerField(default=0)
+
+
 class UserReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="report",
                              on_delete=models.CASCADE)
