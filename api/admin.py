@@ -37,7 +37,10 @@ class MarkerAdmin(OSMGeoAdmin):
     default_zoom = 15
     readonly_fields = ('lat', 'long')
     list_filter = ('district', 'province', 'municipality')
-    list_display = ('name', 'district', 'province', 'municipality')
+    list_display = ('name', 'district', 'province', 'municipality',
+                    'num_of_bed', 'num_of_icu_bed', 'occupied_icu_bed',
+                    'num_of_ventilators', 'occupied_ventilators',
+                    'num_of_isolation_bed', 'occupied_isolation_bed')
     search_fields = ('district', 'province', 'municipality')
 
 admin.site.register(MedicalFacility, MarkerAdmin)
