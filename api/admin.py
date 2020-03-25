@@ -17,9 +17,9 @@ admin.site.register(District)
 
 
 class ProvinceDataAdmin(admin.ModelAdmin):
-    list_filter = ('id', 'update_date', 'active')
-    list_display = ('id', 'update_date', 'active', 'province_id')
-    search_fields = ('id', 'update_date', 'active')
+    list_filter = ('province_id', 'update_date', 'active')
+    list_display = ('province_id', 'update_date', 'active', 'province_id')
+    search_fields = ('province_id', 'update_date', 'active')
 
 
 class CovidCasesAdmin(admin.ModelAdmin):
