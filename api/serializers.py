@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
-    Municipality
+    Municipality, UserRole
 
 HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
                              'time': "9am - 6 PM"},
@@ -88,3 +88,29 @@ class ProvinceDataSerializer(serializers.ModelSerializer):
 
     def get_time(self, obj):
         return HOTLINES[str(obj.id)]['time']
+
+
+class UserRoleSerializer(serializers.ModelSerializer):
+    group_name = serializers.SerializerMethodField()
+    facility_name = serializers.SerializerMethodField()
+    province_name = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserRole
+        fields = ("group", "province", "facility", "group_name",
+                  "province_name", "facility_name")
+
+    def get_group_name(self, obj):
+        if obj.group:
+            return obj.group.name
+        return ""
+
+    def get_province_name(self, obj):
+        if obj.province:
+            return obj.province.name
+        return ""
+
+    def get_facility_name(self, obj):
+        if obj.facility:
+            return obj.facility.name
+        return ""

@@ -1,6 +1,12 @@
 import datetime
+from django.contrib.auth.models import Group
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
+
+from django.conf import settings
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
 
 
 class MedicalFacilityCategory(models.Model):
@@ -119,6 +125,7 @@ class ProvinceData(models.Model):
                 active=False, update_date=now)
         super().save(*args, **kwargs)
 
+
 class CovidCases(models.Model):
     total_tested = models.IntegerField(null=True, blank=True, default=0)
     tested_positive = models.IntegerField(null=True, blank=True, default=0)
@@ -127,3 +134,19 @@ class CovidCases(models.Model):
     date = models.DateField(null=True, blank=True)
 
 
+class UserRole(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="roles",
+                             on_delete=models.CASCADE)
+    group = models.ForeignKey(Group, related_name="roles", on_delete=models.CASCADE)
+    province = models.ForeignKey(Province, on_delete=models.CASCADE,
+                                 related_name='roles',
+                                 blank=True, null=True)
+    facility = models.ForeignKey(MedicalFacility, on_delete=models.CASCADE,
+                                 related_name='roles',
+                                 blank=True, null=True)
+
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)

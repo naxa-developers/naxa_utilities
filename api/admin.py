@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import MedicalFacility, MedicalFacilityCategory, MedicalFacilityType, CovidCases, Province, ProvinceData
+from .models import MedicalFacility, MedicalFacilityCategory, \
+    MedicalFacilityType, CovidCases, Province, ProvinceData, UserRole
 
 from django.contrib.gis.admin import OSMGeoAdmin
 
@@ -8,6 +9,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 admin.site.register(MedicalFacilityCategory)
 admin.site.register(MedicalFacilityType)
 admin.site.register(Province)
+admin.site.register(UserRole)
 
 
 class ProvinceDataAdmin(admin.ModelAdmin):

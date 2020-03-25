@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'django_filters',
     'rest_framework',
+    'rest_framework.authtoken',
     'drf_yasg',
     'api',
 
@@ -126,6 +127,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.BasicAuthentication',
+        'rest_framework.authentication.TokenAuthentication',
+        'rest_framework.authentication.SessionAuthentication',
+    ]
+}
 
 try:
     from .local_setting import *

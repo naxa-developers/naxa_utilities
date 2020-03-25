@@ -18,3 +18,7 @@ urlpatterns = [
     path('stats/', views.StatsAPI.as_view(
         {'get': 'list'})),
 ]
+
+urlpatterns += [
+    path('api-token-auth/', views.CustomAuthToken.as_view())
+]

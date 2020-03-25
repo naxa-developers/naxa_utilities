@@ -1,15 +1,18 @@
 from django.db.models import Sum
-from rest_framework import viewsets, pagination
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
-    DistrictSerializer, MunicipalitySerializer
+    DistrictSerializer, MunicipalitySerializer, UserRoleSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District
-from rest_framework.permissions import AllowAny, IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
+
+from rest_framework import viewsets, pagination
+from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
 
 
 class StandardResultsSetPagination(pagination.PageNumberPagination):
@@ -223,3 +226,20 @@ class ProvinceDataApi(viewsets.ModelViewSet):
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
+
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        roles = user.roles.all().select_related("group", "province", "facility")
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email,
+            'roles': UserRoleSerializer(roles, many=True).data
+        })
