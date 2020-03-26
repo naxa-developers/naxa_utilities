@@ -173,3 +173,16 @@ class AgeGroupDataSerializer(serializers.ModelSerializer):
     class Meta:
         model = AgeGroupData
         fields = "__all__"
+
+
+class SpaceSerializer(serializers.ModelSerializer):
+    distance = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MedicalFacility
+        exclude = ()
+
+    def get_distance(self, obj):
+        a = float(''.join([x for x in str(obj.distance) if x != 'm']).strip()) / 1000
+        return str("{0:.3f}".format(a)) + 'km'
+

@@ -1,38 +1,29 @@
-from django.contrib.gis.geos import GEOSGeometry
-from django.contrib.gis.measure import D
-
 from django.db.models import Sum
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
-    UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer
+    UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
+    SpaceSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import viewsets, pagination
+from rest_framework import viewsets, pagination, views
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
 
-from django.db.models import Aggregate, FloatField
-from django.db.models.aggregates import Aggregate as SQLAggregate
-
-
-class Dist(Aggregate):
-    def add_to_query(self, query, alias, col, source, is_summary):
-        source = FloatField()
-        aggregate = SQLDist(
-            col, source=source, is_summary=is_summary, **self.extra)
-        query.aggregates[alias] = aggregate
-
-
-class SQLDist(SQLAggregate):
-    sql_function = 'ST_Distance_Sphere'
-    sql_template = "%(function)s(ST_GeomFromText('%(point)s'), %(field)s)"
+import io
+import json
+from django.contrib.gis.db.models.functions import Distance
+from django.contrib.gis.geos import GEOSGeometry, Point
+from django.contrib.gis.measure import D
+from django.core.serializers import serialize
+from rest_framework.parsers import JSONParser
+from rest_framework.renderers import JSONRenderer
 
 
 class StandardResultsSetPagination(pagination.PageNumberPagination):
@@ -131,18 +122,8 @@ class MedicalApi(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
-        queryset = self.queryset.select_related('type', 'municipality',
+        return self.queryset.select_related('type', 'municipality',
                                             'district', 'province', 'category')
-        lat = self.request.query_params.get("lat")
-        long = self.request.query_params.get("long")
-        if lat and long:
-            pnt = GEOSGeometry('POINT({} {})'.format(long, lat), srid=4326)
-            queryset = self.queryset.filter(
-                location__distance_lte=(pnt, D(km=500))).annotate(
-                distance=Dist('location', point=pnt)
-            ).select_related('type', 'municipality', 'district', 'province',
-                             'category')
-        return queryset
 
 
 class MedicalApi2(viewsets.ModelViewSet):
@@ -338,3 +319,50 @@ class AgeGroupDataApi(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
+
+class NearFacilityViewSet(views.APIView):
+    permission_classes = []
+
+    def get(self, request):
+        params = request.query_params
+        longitude = params['long']
+        latitude = params['lat']
+
+        user_location = GEOSGeometry('POINT({} {})'.format(longitude, latitude), srid=4326)
+
+        resource_queryset = MedicalFacility.objects.filter(
+            location__distance_lte=(user_location, D(km=500))).annotate(
+            distance=Distance(
+                'location', user_location)).order_by('distance')[:10]
+        resource_json = SpaceSerializer(resource_queryset, many=True)
+        json_data = JSONRenderer().render(resource_json.data)
+        stream = io.BytesIO(json_data)
+        data = JSONParser().parse(stream)
+        return Response(data)
+
+
+class SpaceGeojsonViewSet(views.APIView):
+    permission_classes = []
+
+    def get(self, request):
+        serializers = serialize(
+            'geojson', MedicalFacility.objects.all(),
+            geometry_field='location', fields=('pk', 'name', 'location',
+                                               'province', 'district', 
+                                               'municipality', 'category', 
+                                               'type', 'ownership', 
+                                               'contact_person', 
+                                               'contact_num', 
+                                               'used_for_corona_response', 
+                                               'num_of_bed', 
+                                               'num_of_icu_bed', 
+                                               'occupied_isolation_bed', 
+                                               'occupied_ventilators', 
+                                               'occupied_icu_bed',
+                                               'num_of_isolation_bed',
+                                               'num_of_ventilators',
+                                               'total_in_isolation', 
+                                               'total_death', 
+                                               'total_positive','total_tested'))
+        geojson = json.loads(serializers)
+        return Response(geojson)
