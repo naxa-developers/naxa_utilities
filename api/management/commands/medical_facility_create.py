@@ -26,8 +26,17 @@ class Command(BaseCommand):
                    'Type':"Hospital"},
                   inplace=True)
         municipalities = list(df.Municipality.unique())
+        district = list(df.District.unique())
+        categories = list(df.Category.unique())
+        types = list(df.Type.unique())
+        for d in district:
+            District.objects.get(name=d)
         for m in municipalities:
-            Municipality.objects.get_or_create(name=m)
+            Municipality.objects.get(name=m)
+        for d in types:
+            MedicalFacilityType.objects.get(name=d)
+        for m in categories:
+            MedicalFacilityCategory.objects.get(name=m)
         df.replace({"ownership": ownership_replace}, inplace=True)
         df.replace({"Used_for_Corona_Response": {"Yes": True,
                                                  'No': False}}, inplace=True)
