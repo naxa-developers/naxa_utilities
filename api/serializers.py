@@ -102,6 +102,8 @@ class ProvinceDataSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_facility_count(self, obj):
+        if hasattr(obj, "facility_count"):
+            return obj.facility_count
         return MedicalFacility.objects.filter(province=obj.province_id).count()
 
 
@@ -169,6 +171,8 @@ class DistrictDataSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_facility_count(self, obj):
+        if hasattr(obj, "facility_count"):
+            return obj.facility_count
         return MedicalFacility.objects.filter(district=obj.district_id).count()
 
 
@@ -180,5 +184,7 @@ class MuncDataSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_facility_count(self, obj):
+        if hasattr(obj, "facility_count"):
+            return obj.facility_count
         return MedicalFacility.objects.filter(
             municipality=obj.municipality_id).count()

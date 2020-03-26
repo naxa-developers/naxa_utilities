@@ -1,4 +1,4 @@
-from django.db.models import Sum
+from django.db.models import Sum, Count
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
@@ -52,7 +52,8 @@ class StatsAPI(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def list(self, request):
-        queryset = ProvinceData.objects.filter(active=True)
+        queryset = ProvinceData.objects.filter(active=True).annotate(
+                facility_count=Count("province_id__medical_facility"))
         province = self.request.query_params.get('province')
         district = self.request.query_params.get('district')
         municipality = self.request.query_params.get('municipality')
@@ -61,27 +62,33 @@ class StatsAPI(viewsets.ModelViewSet):
             return Response(data)
 
         elif province:
-            queryset = queryset.filter(province_id=province)
+            queryset = queryset.filter(province_id=province).annotate(
+                facility_count=Count("province_id__medical_facility"))
             data = ProvinceDataSerializer(queryset, many=True).data
             return Response(data)
 
         elif district == "all":
-            queryset = DistrictData.objects.filter(active=True)
+            queryset = DistrictData.objects.filter(active=True).annotate(
+                facility_count=Count("district_id__medical_facility"))
             data = DistrictDataSerializer(queryset, many=True).data
             return Response(data)
 
         elif district:
-            queryset = DistrictData.objects.filter(active=True, district_id=district)
+            queryset = DistrictData.objects.filter(
+                active=True, district_id=district).annotate(
+                facility_count=Count("district_id__medical_facility"))
             data = DistrictDataSerializer(queryset, many=True).data
             return Response(data)
         elif municipality == "all":
-            queryset = MuniData.objects.filter(active=True)
+            queryset = MuniData.objects.filter(active=True).annotate(
+                facility_count=Count("municipality_id__medical_facility"))
             data = MuncDataSerializer(queryset, many=True).data
             return Response(data)
 
         elif municipality:
             queryset = MuniData.objects.filter(
-                active=True, municipality_id=municipality)
+                active=True, municipality_id=municipality).annotate(
+                facility_count=Count("municipality_id__medical_facility"))
             data = MuncDataSerializer(queryset, many=True).data
             return Response(data)
         facility_count = MedicalFacility.objects.all().count()
