@@ -179,6 +179,10 @@ class UserLocation(models.Model):
 
 
 class AgeGroupData(models.Model):
+    munid = models.IntegerField(default=0)
+    provinceId = models.IntegerField(default=0)
+    districtId = models.IntegerField(default=0)
+
     hlcit_code = models.CharField(max_length=63)
     municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE,
                                      related_name='age',
