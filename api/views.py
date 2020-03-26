@@ -139,9 +139,11 @@ class MedicalApi(viewsets.ModelViewSet):
             pnt = GEOSGeometry('POINT({} {})'.format(long, lat), srid=4326)
             queryset = self.queryset.filter(
                 location__distance_lte=(pnt, D(km=500))).annotate(
-                distance=Dist('location', point=pnt))
+                distance=Dist('location', point=pnt)
+            ).select_related('type', 'municipality', 'district', 'province',
+                             'category')
         return queryset
-    
+
 
 class MedicalApi2(viewsets.ModelViewSet):
     queryset = MedicalFacility.objects.all()
