@@ -30,12 +30,16 @@ class Command(BaseCommand):
         categories = list(df.Category.unique())
         types = list(df.Type.unique())
         for d in district:
+            print(d)
             District.objects.get(name=d)
         for m in municipalities:
+            print(m)
             Municipality.objects.get(name=m)
         for d in types:
+            print(d)
             MedicalFacilityType.objects.get(name=d)
         for m in categories:
+            print(m)
             MedicalFacilityCategory.objects.get(name=m)
         df.replace({"ownership": ownership_replace}, inplace=True)
         df.replace({"Used_for_Corona_Response": {"Yes": True,
