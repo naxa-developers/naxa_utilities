@@ -140,7 +140,7 @@ class ProvinceData(models.Model):
 
 class DistrictData(models.Model):
     province_id = models.ForeignKey(Province, on_delete=models.CASCADE,
-                                    related_name='district_data')
+                                    related_name='district_data', null=True, blank=True)
     district_id = models.ForeignKey(District, on_delete=models.CASCADE,
                           related_name='district_data')
     num_of_bed = models.IntegerField(null=True, blank=True, default=0)
