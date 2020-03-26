@@ -295,7 +295,7 @@ class UserReportApi(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+        if self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [AllowAny]
@@ -306,7 +306,6 @@ class UserReportApi(viewsets.ModelViewSet):
             serializer.save(user=self.request.user)
         else:
             serializer.save()
-
 
 
 class AgeGroupDataApi(viewsets.ModelViewSet):
