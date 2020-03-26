@@ -49,6 +49,7 @@ class MedicalFacilitySerializer(serializers.ModelSerializer):
     municipality_name = serializers.SerializerMethodField()
     category_name = serializers.SerializerMethodField()
     type_name = serializers.SerializerMethodField()
+    distance = serializers.SerializerMethodField()
 
     class Meta:
         model = MedicalFacility
@@ -80,6 +81,11 @@ class MedicalFacilitySerializer(serializers.ModelSerializer):
         if obj.category:
             return obj.category.name
         return ""
+
+    def get_distance(self, obj):
+        if hasattr(obj, "distance"):
+            return obj.distance
+        return 0
 
 
 class CaseSerializer(serializers.ModelSerializer):

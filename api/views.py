@@ -1,3 +1,6 @@
+from django.contrib.gis.geos import GEOSGeometry
+from django.contrib.gis.measure import D
+
 from django.db.models import Sum
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
@@ -14,6 +17,22 @@ from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
 from rest_framework.authtoken.models import Token
+
+from django.db.models import Aggregate, FloatField
+from django.db.models.aggregates import Aggregate as SQLAggregate
+
+
+class Dist(Aggregate):
+    def add_to_query(self, query, alias, col, source, is_summary):
+        source = FloatField()
+        aggregate = SQLDist(
+            col, source=source, is_summary=is_summary, **self.extra)
+        query.aggregates[alias] = aggregate
+
+
+class SQLDist(SQLAggregate):
+    sql_function = 'ST_Distance_Sphere'
+    sql_template = "%(function)s(ST_GeomFromText('%(point)s'), %(field)s)"
 
 
 class StandardResultsSetPagination(pagination.PageNumberPagination):
@@ -112,8 +131,17 @@ class MedicalApi(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
-        return self.queryset.select_related('type', 'municipality',
+        queryset = self.queryset.select_related('type', 'municipality',
                                             'district', 'province', 'category')
+        lat = self.request.query_params.get("lat")
+        long = self.request.query_params.get("long")
+        if lat and long:
+            pnt = GEOSGeometry('POINT({} {})'.format(long, lat), srid=4326)
+            queryset = self.queryset.filter(
+                location__distance_lte=(pnt, D(km=500))).annotate(
+                distance=Dist('location', point=pnt))
+        return queryset
+    
 
 class MedicalApi2(viewsets.ModelViewSet):
     queryset = MedicalFacility.objects.all()
