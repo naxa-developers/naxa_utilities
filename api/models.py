@@ -198,7 +198,7 @@ class MuniData(models.Model):
         if not self.pk:
             now = datetime.datetime.now()
             munc = self.municipality_id
-            Municipality.objects.filter(active=True,
+            MuniData.objects.filter(active=True,
                                         municipality_id=munc).update(
                 active=False, update_date=now)
             if self.municipality_id.district:
