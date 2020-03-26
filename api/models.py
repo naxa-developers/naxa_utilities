@@ -274,6 +274,7 @@ class UserReport(models.Model):
     device_id = models.CharField(max_length=63, blank=True, null=True)
     name = models.CharField(max_length=255)
     age = models.IntegerField(default=0)
+    gender = models.CharField(default="Male", max_length=63)
     temperature = models.FloatField(default=0.0)
     in_self_quarrantine = models.BooleanField(default=True)
     have_cough = models.BooleanField(default=True)
