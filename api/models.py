@@ -199,8 +199,20 @@ class AgeGroupData(models.Model):
 
 class UserReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="report",
-                             on_delete=models.CASCADE)
+                             blank=True, null=True, on_delete=models.SET_NULL)
+    device_id = models.CharField(max_length=63, blank=True, null=True)
     name = models.CharField(max_length=255)
+    age = models.IntegerField(default=0)
+    temperature = models.FloatField(default=0.0)
+    in_self_quarrantine = models.BooleanField(default=True)
+    have_cough = models.BooleanField(default=True)
+    have_fatigue = models.BooleanField(default=True)
+    have_throat_pain = models.BooleanField(default=True)
+    fast_breathe = models.BooleanField(default=True)
+    body_pain = models.BooleanField(default=True)
+    diarrahoe = models.BooleanField(default=True)
+    vomit = models.BooleanField(default=True)
+    runny_nose = models.BooleanField(default=True)
     address = models.CharField(max_length=255)
     contact_no = models.CharField(max_length=255)
     symptoms = models.TextField(max_length=255)

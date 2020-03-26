@@ -302,7 +302,11 @@ class UserReportApi(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        if self.request.user:
+            serializer.save(user=self.request.user)
+        else:
+            serializer.save()
+
 
 
 class AgeGroupDataApi(viewsets.ModelViewSet):
