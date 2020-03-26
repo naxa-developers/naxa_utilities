@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import MedicalFacility, MedicalFacilityCategory, \
-    MedicalFacilityType, CovidCases, Province, ProvinceData, UserRole, \
-    Municipality, District, UserLocation, UserReport
+    MedicalFacilityType, Province, ProvinceData, UserRole, \
+    Municipality, District, UserLocation, UserReport, DistrictData, MuniData
 
 from django.contrib.gis.admin import OSMGeoAdmin
 
@@ -14,12 +14,22 @@ admin.site.register(UserRole)
 admin.site.register(Municipality)
 admin.site.register(District)
 
-
-
 class ProvinceDataAdmin(admin.ModelAdmin):
     list_filter = ('province_id', 'update_date', 'active')
-    list_display = ('province_id', 'update_date', 'active', 'province_id')
+    list_display = ('province_id', 'update_date', 'active')
     search_fields = ('province_id', 'update_date', 'active')
+
+
+class DistrictDataAdmin(admin.ModelAdmin):
+    list_filter = ('district_id', 'update_date', 'active')
+    list_display = ('district_id', 'update_date', 'active', 'province_id')
+    search_fields = ('district_id', 'update_date', 'active')
+
+
+class MuniDataAdmin(admin.ModelAdmin):
+    list_filter = ('municipality_id', 'update_date', 'active')
+    list_display = ('municipality_id', 'update_date', 'active', 'province_id')
+    search_fields = ('municipality_id', 'update_date', 'active')
 
 
 class CovidCasesAdmin(admin.ModelAdmin):
@@ -29,7 +39,8 @@ class CovidCasesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ProvinceData, ProvinceDataAdmin)
-# admin.site.register(CovidCases, CovidCasesAdmin)
+admin.site.register(MuniData, MuniDataAdmin)
+admin.site.register(DistrictData, DistrictDataAdmin)
 
 
 class MarkerAdmin(OSMGeoAdmin):
@@ -44,6 +55,7 @@ class MarkerAdmin(OSMGeoAdmin):
                     'num_of_isolation_bed', 'occupied_isolation_bed')
     search_fields = ('district', 'province', 'municipality')
 
+
 admin.site.register(MedicalFacility, MarkerAdmin)
 
 
@@ -55,6 +67,7 @@ class ReportAdmin(OSMGeoAdmin):
     list_filter = ('user',)
     list_display = ('user', 'lat', 'long')
 
+
 admin.site.register(UserReport, ReportAdmin)
 
 
@@ -65,5 +78,6 @@ class UserLocationAdmin(OSMGeoAdmin):
     readonly_fields = ('lat', 'long')
     list_filter = ('user',)
     list_display = ('user', 'lat', 'long')
+
 
 admin.site.register(UserLocation, UserLocationAdmin)

@@ -4,10 +4,10 @@ from .serializers import MedicalFacilitySerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
-    SpaceSerializer
+    SpaceSerializer, DistrictDataSerializer, MuncDataSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
-    District, UserLocation, UserReport, AgeGroupData
+    District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination, views
@@ -31,30 +31,12 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
     page_size_query_param = 'page_size'
     max_page_size = 1000
 
-HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "1": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "2": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "3": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "4": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "5": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "6": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "7": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            }
-
 NationalHotine = "9851255834, 9851255837, 9851255839 :8 AM – 8 PM: 1115:(6 AM – 10 PM)"
 
 
 # Create your views here.
 class StatsAPI(viewsets.ModelViewSet):
-    queryset = ProvinceData.objects.all()
+    queryset = ProvinceData.objects.filter(active=True)
     serializer_class = ProvinceDataSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ['id', 'province_id']
@@ -72,19 +54,37 @@ class StatsAPI(viewsets.ModelViewSet):
     def list(self, request):
         queryset = ProvinceData.objects.filter(active=True)
         province = self.request.query_params.get('province')
-        facility_count = 0
+        district = self.request.query_params.get('district')
+        municipality = self.request.query_params.get('municipality')
         if province == "all":
             data = ProvinceDataSerializer(queryset, many=True).data
             return Response(data)
 
-        if province:
+        elif province:
             queryset = queryset.filter(province_id=province)
-            facility_count = MedicalFacility.objects.filter(
-                province=province).count()
-        else:
-            province = "0"
-            facility_count = MedicalFacility.objects.all().count()
-        hotline = HOTLINES.get(province, {})
+            data = ProvinceDataSerializer(queryset, many=True).data
+            return Response(data)
+
+        elif district == "all":
+            queryset = DistrictData.objects.filter(active=True)
+            data = DistrictDataSerializer(queryset, many=True).data
+            return Response(data)
+
+        elif district:
+            queryset = DistrictData.objects.filter(active=True, district_id=district)
+            data = DistrictDataSerializer(queryset, many=True).data
+            return Response(data)
+        elif municipality == "all":
+            queryset = MuniData.objects.filter(active=True)
+            data = MuncDataSerializer(queryset, many=True).data
+            return Response(data)
+
+        elif municipality:
+            queryset = MuniData.objects.filter(
+                active=True, municipality_id=municipality)
+            data = MuncDataSerializer(queryset, many=True).data
+            return Response(data)
+        facility_count = MedicalFacility.objects.all().count()
         data = queryset.aggregate(
             tested=Sum('total_tested'),
             confirmed=Sum('total_positive'),
@@ -97,7 +97,6 @@ class StatsAPI(viewsets.ModelViewSet):
             isolation_bed=Sum('num_of_isolation_bed'),
             occupied_isolation_bed=Sum('occupied_ventilators'),
         )
-        data.update(hotline)
         data.update({'facility_count': facility_count})
         data.update({"hotline": NationalHotine})
         return Response(data)
@@ -240,6 +239,36 @@ class DistrictApi(viewsets.ModelViewSet):
 class ProvinceDataApi(viewsets.ModelViewSet):
     queryset = ProvinceData.objects.order_by('id')
     serializer_class = ProvinceDataSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class DistrictDataApi(viewsets.ModelViewSet):
+    queryset = DistrictData.objects.order_by('id')
+    serializer_class = DistrictDataSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class MuncDataApi(viewsets.ModelViewSet):
+    queryset = MuniData.objects.order_by('id')
+    serializer_class = MuncDataSerializer
 
     def get_permissions(self):
         """

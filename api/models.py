@@ -138,6 +138,77 @@ class ProvinceData(models.Model):
         super().save(*args, **kwargs)
 
 
+class DistrictData(models.Model):
+    province_id = models.ForeignKey(Province, on_delete=models.CASCADE,
+                                    related_name='district_data')
+    district_id = models.ForeignKey(District, on_delete=models.CASCADE,
+                          related_name='district_data')
+    num_of_bed = models.IntegerField(null=True, blank=True, default=0)
+    num_of_icu_bed = models.IntegerField(null=True, blank=True, default=0)
+    occupied_icu_bed = models.IntegerField(null=True, blank=True, default=0)
+    num_of_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    occupied_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
+    occupied_isolation_bed = models.IntegerField(null=True, blank=True,
+                                                 default=0)
+    total_tested = models.IntegerField(null=True, blank=True, default=0)
+    total_positive = models.IntegerField(null=True, blank=True, default=0)
+    total_death = models.IntegerField(null=True, blank=True, default=0)
+    total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
+    active = models.BooleanField(default=True)
+    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    hotline = models.TextField()
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            now = datetime.datetime.now()
+            district = self.district_id
+            DistrictData.objects.filter(active=True, district_id=district).update(
+                active=False, update_date=now)
+            if self.district_id.province:
+                self.province_id = self.district_id.province
+        super().save(*args, **kwargs)
+
+
+class MuniData(models.Model):
+    province_id = models.ForeignKey(Province, on_delete=models.CASCADE,
+                                    related_name='muncdata', blank=True,
+                                    null=True)
+    district_id = models.ForeignKey(District, on_delete=models.CASCADE,
+                          related_name='muncdata', null=True, blank=True)
+    municipality_id = models.ForeignKey(Municipality, on_delete=models.CASCADE,
+                          related_name='muncdata')
+    num_of_bed = models.IntegerField(null=True, blank=True, default=0)
+    num_of_icu_bed = models.IntegerField(null=True, blank=True, default=0)
+    occupied_icu_bed = models.IntegerField(null=True, blank=True, default=0)
+    num_of_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    occupied_ventilators = models.IntegerField(null=True, blank=True, default=0)
+    num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
+    occupied_isolation_bed = models.IntegerField(null=True, blank=True,
+                                                 default=0)
+    total_tested = models.IntegerField(null=True, blank=True, default=0)
+    total_positive = models.IntegerField(null=True, blank=True, default=0)
+    total_death = models.IntegerField(null=True, blank=True, default=0)
+    total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
+    active = models.BooleanField(default=True)
+    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    hotline = models.TextField()
+
+    def save(self, *args, **kwargs):
+        if not self.pk:
+            now = datetime.datetime.now()
+            munc = self.municipality_id
+            Municipality.objects.filter(active=True,
+                                        municipality_id=munc).update(
+                active=False, update_date=now)
+            if self.municipality_id.district:
+                self.district_id = self.municipality_id.district
+            if self.municipality_id.province:
+                self.province_id = self.district_id.province
+
+        super().save(*args, **kwargs)
+
+
 class CovidCases(models.Model):
     total_tested = models.IntegerField(null=True, blank=True, default=0)
     tested_positive = models.IntegerField(null=True, blank=True, default=0)

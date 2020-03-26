@@ -1,26 +1,8 @@
 from rest_framework import serializers
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
-    Municipality, UserRole, UserLocation, UserReport, AgeGroupData
-
-HOTLINES = {"0": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "1": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "2": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "3": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "4": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "5": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "6": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            "7": {"phones" :["11111111", "22222222", "2222222"],
-                             'time': "9am - 6 PM"},
-            }
-
+    Municipality, UserRole, UserLocation, UserReport, AgeGroupData, \
+    DistrictData, MuniData
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
@@ -113,19 +95,11 @@ class MunicipalitySerializer(serializers.ModelSerializer):
 
 
 class ProvinceDataSerializer(serializers.ModelSerializer):
-    phones = serializers.SerializerMethodField()
-    time = serializers.SerializerMethodField()
     facility_count = serializers.SerializerMethodField()
 
     class Meta:
         model = ProvinceData
         fields = "__all__"
-
-    def get_phones(self, obj):
-        return HOTLINES[str(obj.id)]['phones']
-
-    def get_time(self, obj):
-        return HOTLINES[str(obj.id)]['time']
 
     def get_facility_count(self, obj):
         return MedicalFacility.objects.filter(province=obj.province_id).count()
@@ -186,3 +160,25 @@ class SpaceSerializer(serializers.ModelSerializer):
         a = float(''.join([x for x in str(obj.distance) if x != 'm']).strip()) / 1000
         return str("{0:.3f}".format(a)) + 'km'
 
+
+class DistrictDataSerializer(serializers.ModelSerializer):
+    facility_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DistrictData
+        fields = "__all__"
+
+    def get_facility_count(self, obj):
+        return MedicalFacility.objects.filter(district=obj.district_id).count()
+
+
+class MuncDataSerializer(serializers.ModelSerializer):
+    facility_count = serializers.SerializerMethodField()
+
+    class Meta:
+        model = MuniData
+        fields = "__all__"
+
+    def get_facility_count(self, obj):
+        return MedicalFacility.objects.filter(
+            municipality=obj.municipality_id).count()
