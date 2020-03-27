@@ -44,9 +44,9 @@ admin.site.register(DistrictData, DistrictDataAdmin)
 
 
 class MarkerAdmin(OSMGeoAdmin):
-    default_lon = 83
-    default_lat = 27
-    default_zoom = 15
+    default_lon = 84
+    default_lat = 28
+    default_zoom = 75
     readonly_fields = ('lat', 'long')
     list_filter = ('district', 'province', 'municipality')
     list_display = ('name', 'district', 'province', 'municipality',
@@ -60,21 +60,21 @@ admin.site.register(MedicalFacility, MarkerAdmin)
 
 
 class ReportAdmin(OSMGeoAdmin):
-    default_lon = 83
-    default_lat = 27
-    default_zoom = 15
+    default_lon = 84
+    default_lat = 28
+    default_zoom = 100
     readonly_fields = ('lat', 'long')
-    list_filter = ('user',)
-    list_display = ('user', 'lat', 'long')
+    list_filter = ('fast_breathe',)
+    list_display = ('name', 'temperature', 'fast_breathe')
 
 
 admin.site.register(UserReport, ReportAdmin)
 
 
 class UserLocationAdmin(OSMGeoAdmin):
-    default_lon = 83
-    default_lat = 27
-    default_zoom = 15
+    default_lon = 84
+    default_lat = 28
+    default_zoom = 50
     readonly_fields = ('lat', 'long')
     list_filter = ('user',)
     list_display = ('user', 'lat', 'long')
