@@ -10,7 +10,7 @@ from .models import MedicalFacility, MedicalFacilityType, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData
 from django_filters.rest_framework import DjangoFilterBackend
 
-from rest_framework import viewsets, pagination, views
+from rest_framework import viewsets, pagination, views, status
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.views import ObtainAuthToken
@@ -342,6 +342,19 @@ class UserReportApi(viewsets.ModelViewSet):
             serializer.save(user=self.request.user)
         else:
             serializer.save()
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        temperature = serializer.data['temperature']
+        fast_breathe = serializer.data['fast_breathe']
+        message = "negative"
+        if temperature > 102 and fast_breathe:
+            message = "positive"
+        headers = self.get_success_headers(serializer.data)
+        return Response({"message": message}, status=status.HTTP_201_CREATED,
+                        headers=headers)
 
 
 class AgeGroupDataApi(viewsets.ModelViewSet):
