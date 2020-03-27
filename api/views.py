@@ -326,6 +326,7 @@ class UserLocationApi(viewsets.ModelViewSet):
 class UserReportApi(viewsets.ModelViewSet):
     queryset = UserReport.objects.all()
     serializer_class = UserReportSerializer
+    pagination_class = StandardResultsSetPagination
 
     def get_permissions(self):
         """
@@ -353,7 +354,7 @@ class UserReportApi(viewsets.ModelViewSet):
                   " संक्रमणसंग पूर्णरुपमा मिलेका छैनन् । यद्यपि तपाइलाई संका भएमा" \
                   " सम्पूर्ण परिक्षणको लागि नजिकैको स्वास्थ्य केन्द्र तथा नेपाल सरकारले " \
                   "निर्धारण गरेका परिक्षण केन्द्रमा सम्पर्क राख्नुहोला ।"
-        if temperature > 102 and fast_breathe:
+        if temperature >= 102 and fast_breathe:
             message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
                       " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
                       "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
