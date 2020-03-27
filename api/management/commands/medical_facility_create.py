@@ -42,8 +42,8 @@ class Command(BaseCommand):
             print(m)
             MedicalFacilityCategory.objects.get(name=m)
         df.replace({"ownership": ownership_replace}, inplace=True)
-        df.replace({"Used_for_Corona_Response": {"Yes": True,
-                                                 'No': False}}, inplace=True)
+        df.replace({"Used_for_Corona_Response": {"Yes": 1,
+                                                 'No': 0}}, inplace=True)
         print("Wait Data is being Loaded")
         medical_fac = [
             MedicalFacility(
@@ -65,7 +65,8 @@ class Command(BaseCommand):
                 name=str(df['Name of Facility'][row]),
                 ownership=str(df['Type_of_Ownership'][row]),
                 contact_num=str(df['Contact_No'][row]),
-                used_for_corona_response=df['Used_for_Corona_Response'][row],
+                used_for_corona_response=bool(df['Used_for_Corona_Response'][
+                    row]),
                 num_of_bed=int(df['No_of_Beds'][row]),
                 num_of_ventilators=int(df['Number_of_Ventilators'][row]),
                 num_of_isolation_bed=int(df['Number_of_Isolation_Beds'][row]),
