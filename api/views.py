@@ -338,7 +338,7 @@ class UserReportApi(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def perform_create(self, serializer):
-        if self.request.user:
+        if self.request.user and not self.request.user.is_anonymous:
             serializer.save(user=self.request.user)
         else:
             serializer.save()
