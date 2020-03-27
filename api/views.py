@@ -349,9 +349,15 @@ class UserReportApi(viewsets.ModelViewSet):
         self.perform_create(serializer)
         temperature = serializer.data['temperature']
         fast_breathe = serializer.data['fast_breathe']
-        message = "negative"
+        message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
+                  " संक्रमणसंग पूर्णरुपमा मिलेका छैनन् । यद्यपि तपाइलाई संका भएमा" \
+                  " सम्पूर्ण परिक्षणको लागि नजिकैको स्वास्थ्य केन्द्र तथा नेपाल सरकारले " \
+                  "निर्धारण गरेका परिक्षण केन्द्रमा सम्पर्क राख्नुहोला ।"
         if temperature > 102 and fast_breathe:
-            message = "positive"
+            message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
+                      " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
+                      "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
+                      " सम्पर्क राख्नुहोला ।"
         headers = self.get_success_headers(serializer.data)
         return Response({"message": message}, status=status.HTTP_201_CREATED,
                         headers=headers)
