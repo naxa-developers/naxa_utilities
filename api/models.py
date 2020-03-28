@@ -224,6 +224,12 @@ class UserRole(models.Model):
     province = models.ForeignKey(Province, on_delete=models.CASCADE,
                                  related_name='roles',
                                  blank=True, null=True)
+    district = models.ForeignKey(District, on_delete=models.CASCADE,
+                                 related_name='roles',
+                                 blank=True, null=True)
+    municipality = models.ForeignKey(Municipality, on_delete=models.CASCADE,
+                                 related_name='roles',
+                                 blank=True, null=True)
     facility = models.ForeignKey(MedicalFacility, on_delete=models.CASCADE,
                                  related_name='roles',
                                  blank=True, null=True)

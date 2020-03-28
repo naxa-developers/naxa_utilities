@@ -140,9 +140,28 @@ class UserLocationSerializer(serializers.ModelSerializer):
 
 
 class UserReportSerializer(serializers.ModelSerializer):
+    result = serializers.SerializerMethodField()
+
     class Meta:
         model = UserReport
         fields = "__all__"
+
+    def get_result(self, obj):
+        if obj.temperature > 102 and obj.fast_breathe:
+            return " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
+                   " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
+                   "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
+                   " सम्पर्क राख्नुहोला ।"
+        elif not obj.id:
+            return " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
+                   " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
+                   "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
+                   " सम्पर्क राख्नुहोला ।"
+        else:
+            return " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
+                   " संक्रमणसंग पूर्णरुपमा मिलेका छैनन् । यद्यपि तपाइलाई संका भएमा" \
+                   " सम्पूर्ण परिक्षणको लागि नजिकैको स्वास्थ्य केन्द्र तथा नेपाल सरकारले " \
+                   "निर्धारण गरेका परिक्षण केन्द्रमा सम्पर्क राख्नुहोला ।"
 
 
 class AgeGroupDataSerializer(serializers.ModelSerializer):
