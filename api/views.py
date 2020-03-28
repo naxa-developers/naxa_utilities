@@ -1,4 +1,4 @@
-from django.db.models import Sum, Count
+from django.db.models import Sum, Count, Max
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
@@ -96,6 +96,7 @@ class StatsAPI(viewsets.ModelViewSet):
             tested=Sum('total_tested'))
         data = queryset.aggregate(
             # tested=Sum('total_tested'),
+            update_date=Max('update_date'),
             confirmed=Sum('total_positive'),
             isolation=Sum('total_in_isolation'),
             death=Sum('total_death'),
