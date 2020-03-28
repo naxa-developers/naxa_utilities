@@ -1,3 +1,4 @@
+import random
 from django.db.models import Sum, Count, Max
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
@@ -364,7 +365,8 @@ class UserReportApi(viewsets.ModelViewSet):
                       "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
                       " सम्पर्क राख्नुहोला ।"
         headers = self.get_success_headers(serializer.data)
-        return Response({"message": message}, status=status.HTTP_201_CREATED,
+        return Response({"message": message, "result":random.choice(["likely", "morelikely", "lesslikely"])},
+                        status=status.HTTP_201_CREATED,
                         headers=headers)
 
 

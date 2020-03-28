@@ -1,3 +1,4 @@
+import random
 from rest_framework import serializers
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
@@ -141,12 +142,16 @@ class UserLocationSerializer(serializers.ModelSerializer):
 
 class UserReportSerializer(serializers.ModelSerializer):
     result = serializers.SerializerMethodField()
+    message = serializers.SerializerMethodField()
 
     class Meta:
         model = UserReport
         fields = "__all__"
 
     def get_result(self, obj):
+        return random.choice(["likely", "morelikely", "lesslikely"])
+
+    def get_message(self, obj):
         if obj.temperature > 102 and obj.fast_breathe:
             return " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
                    " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
