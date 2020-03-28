@@ -92,8 +92,10 @@ class StatsAPI(viewsets.ModelViewSet):
             data = MuncDataSerializer(queryset, many=True).data
             return Response(data)
         facility_count = MedicalFacility.objects.all().count()
+        tested = MedicalFacility.objects.aggregate(
+            tested=Sum('total_tested'))
         data = queryset.aggregate(
-            tested=Sum('total_tested'),
+            # tested=Sum('total_tested'),
             confirmed=Sum('total_positive'),
             isolation=Sum('total_in_isolation'),
             death=Sum('total_death'),
@@ -104,6 +106,7 @@ class StatsAPI(viewsets.ModelViewSet):
             isolation_bed=Sum('num_of_isolation_bed'),
             occupied_isolation_bed=Sum('occupied_ventilators'),
         )
+        data.update(tested)
         data.update({'facility_count': facility_count})
         data.update({"hotline": NationalHotine})
         return Response(data)
