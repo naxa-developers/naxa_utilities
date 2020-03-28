@@ -22,8 +22,7 @@ class ProvinceDataAdmin(admin.ModelAdmin):
 
 class UserRoleAdmin(admin.ModelAdmin):
     list_filter = ('group', 'province')
-    list_display = ('user', 'get_first_name', 'get_last_name', 'group',
-                    'active')
+    list_display = ('user', 'get_first_name', 'get_last_name', 'group')
     search_fields = ('user', 'active')
 
     def get_first_name(self, obj):
