@@ -10,7 +10,7 @@ from django.contrib.gis.admin import OSMGeoAdmin
 admin.site.register(MedicalFacilityCategory)
 admin.site.register(MedicalFacilityType)
 admin.site.register(Province)
-admin.site.register(UserRole)
+
 admin.site.register(Municipality)
 admin.site.register(District)
 
@@ -18,6 +18,13 @@ class ProvinceDataAdmin(admin.ModelAdmin):
     list_filter = ('province_id', 'update_date', 'active')
     list_display = ('province_id', 'update_date', 'active')
     search_fields = ('province_id', 'update_date', 'active')
+
+
+class UserRoleAdmin(admin.ModelAdmin):
+    list_filter = ('group', 'province')
+    list_display = ('user', 'user__first_name', 'user__last_name', 'group',
+                    'active')
+    search_fields = ('user', 'active')
 
 
 class DistrictDataAdmin(admin.ModelAdmin):
@@ -39,6 +46,7 @@ class CovidCasesAdmin(admin.ModelAdmin):
 
 
 admin.site.register(ProvinceData, ProvinceDataAdmin)
+admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(MuniData, MuniDataAdmin)
 admin.site.register(DistrictData, DistrictDataAdmin)
 
