@@ -22,9 +22,18 @@ class ProvinceDataAdmin(admin.ModelAdmin):
 
 class UserRoleAdmin(admin.ModelAdmin):
     list_filter = ('group', 'province')
-    list_display = ('user', 'user__first_name', 'user__last_name', 'group',
+    list_display = ('user', 'get_first_name', 'get_last_name', 'group',
                     'active')
     search_fields = ('user', 'active')
+
+    def get_first_name(self, obj):
+        return obj.user.first_name
+
+    def get_last_name(self, obj):
+        return obj.user.last_name
+
+    get_first_name.short_description = 'FirstName'
+    get_last_name.short_description = 'LastName'
 
 
 class DistrictDataAdmin(admin.ModelAdmin):
