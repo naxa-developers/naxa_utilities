@@ -339,7 +339,8 @@ class UserReportApi(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+        if self.action in ['destroy', 'update', 'partial_update', 'list',
+                           'get', 'retrieve']:
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [AllowAny]
