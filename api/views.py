@@ -357,7 +357,8 @@ class UserReportApi(viewsets.ModelViewSet):
         self.perform_create(serializer)
         temperature = serializer.data['temperature']
         fast_breathe = serializer.data['fast_breathe']
-        has_travel_history = serializer.data['has_travel_history']
+        has_travel_history = serializer.data['travel_history']
+        has_convid_contact = serializer.data['has_convid_contact']
         message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
                   " संक्रमणसंग पूर्णरुपमा मिलेका छैनन् । यद्यपि तपाइलाई संका भएमा" \
                   " सम्पूर्ण परिक्षणको लागि नजिकैको स्वास्थ्य केन्द्र तथा नेपाल सरकारले " \
@@ -367,7 +368,12 @@ class UserReportApi(viewsets.ModelViewSet):
                       " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
                       "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
                       " सम्पर्क राख्नुहोला ।"
-        if has_travel_history:
+        elif has_travel_history:
+            message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
+                      " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
+                      "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
+                      " सम्पर्क राख्नुहोला ।"
+        elif has_convid_contact:
             message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
                       " संक्रमणसंग मिल्दाजुल्दा छन् । सम्पूर्ण परिक्षणको लागि नजिकैको " \
                       "स्वास्थ्य केन्द्र तथा नेपाल सरकारले निर्धारण गरेका परिक्षण केन्द्रमा" \
