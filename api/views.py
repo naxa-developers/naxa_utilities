@@ -357,8 +357,14 @@ class UserReportApi(viewsets.ModelViewSet):
         self.perform_create(serializer)
         temperature = serializer.data['temperature']
         fast_breathe = serializer.data['fast_breathe']
-        has_travel_history = serializer.data['travel_history']
-        has_convid_contact = serializer.data['has_convid_contact']
+        travel_history = serializer.data['travel_history']
+        try:
+            data = json.loads(travel_history)
+        except Exception as e:
+            print(e)
+            data = {}
+        has_travel_history = data.get('has_travel_history', False)
+        has_convid_contact = data.get('has_convid_contact', False)
         message = " प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका विवरण कोभीड-१९" \
                   " संक्रमणसंग पूर्णरुपमा मिलेका छैनन् । यद्यपि तपाइलाई संका भएमा" \
                   " सम्पूर्ण परिक्षणको लागि नजिकैको स्वास्थ्य केन्द्र तथा नेपाल सरकारले " \
