@@ -5,10 +5,12 @@ from .serializers import MedicalFacilitySerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
-    SpaceSerializer, DistrictDataSerializer, MuncDataSerializer
+    SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
+    GlobalDataSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
-    District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData
+    District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
+    GlobalData
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination, views, status
@@ -329,7 +331,7 @@ class UserLocationApi(viewsets.ModelViewSet):
 
 
 class UserReportApi(viewsets.ModelViewSet):
-    queryset = UserReport.objects.all()
+    queryset = CovidCases.objects.all()
     serializer_class = UserReportSerializer
     pagination_class = StandardResultsSetPagination
 
@@ -373,6 +375,21 @@ class UserReportApi(viewsets.ModelViewSet):
 class AgeGroupDataApi(viewsets.ModelViewSet):
     queryset = AgeGroupData.objects.all()
     serializer_class = AgeGroupDataSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class GlobalDataApi(viewsets.ModelViewSet):
+    queryset = GlobalData.objects.all()
+    serializer_class = GlobalDataSerializer
 
     def get_permissions(self):
         """

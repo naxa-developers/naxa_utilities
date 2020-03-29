@@ -3,7 +3,7 @@ from rest_framework import serializers
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
     Municipality, UserRole, UserLocation, UserReport, AgeGroupData, \
-    DistrictData, MuniData
+    DistrictData, MuniData, GlobalData
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
@@ -194,3 +194,10 @@ class MuncDataSerializer(serializers.ModelSerializer):
             return obj.facility_count
         return MedicalFacility.objects.filter(
             municipality=obj.municipality_id).count()
+
+
+class GlobalDataSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = GlobalData
+        fields = "__all__"

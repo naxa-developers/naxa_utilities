@@ -126,7 +126,7 @@ class ProvinceData(models.Model):
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
-    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    update_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     hotline = models.TextField()
 
     def save(self, *args, **kwargs):
@@ -156,7 +156,7 @@ class DistrictData(models.Model):
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
-    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    update_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     hotline = models.TextField()
 
     def save(self, *args, **kwargs):
@@ -191,7 +191,7 @@ class MuniData(models.Model):
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
-    update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    update_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     hotline = models.TextField()
 
     def save(self, *args, **kwargs):
@@ -210,11 +210,27 @@ class MuniData(models.Model):
 
 
 class CovidCases(models.Model):
-    total_tested = models.IntegerField(null=True, blank=True, default=0)
-    tested_positive = models.IntegerField(null=True, blank=True, default=0)
-    tested_negative = models.IntegerField(null=True, blank=True, default=0)
-    death = models.IntegerField(null=True, blank=True, default=0)
+    province_id = models.ForeignKey(Province, on_delete=models.CASCADE,
+                                    related_name='cases', blank=True,
+                                    null=True)
+    district_id = models.ForeignKey(District, on_delete=models.CASCADE,
+                                    related_name='cases', null=True,
+                                    blank=True)
+    municipality_id = models.ForeignKey(Municipality, on_delete=models.CASCADE,
+                                        related_name='cases', blank=True,
+                                        null=True)
+    age = models.IntegerField(default=0)
+    gender = models.CharField(default="Male", max_length=15)
+    came_from = models.CharField(max_length=255, null=True, blank=True)
+    transit = models.CharField(max_length=255, null=True, blank=True)
+    labrotary = models.CharField(max_length=255, null=True, blank=True)
+    in_isolation = models.BooleanField(default=False)
+    current_status = models.CharField(default="unknown",max_length=31)
+    remarks = models.CharField(max_length=255, null=True, blank=True)
     date = models.DateField(null=True, blank=True)
+    returned_date = models.DateField(null=True, blank=True)
+    detected_date = models.DateField(null=True, blank=True)
+
 
 
 class UserRole(models.Model):
@@ -313,3 +329,10 @@ class UserReport(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class GlobalData(models.Model):
+    total_infected_global = models.IntegerField(default=0)
+    total_recovered_global = models.IntegerField(default=0)
+    total_deaths_global = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
