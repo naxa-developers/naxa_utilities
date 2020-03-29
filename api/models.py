@@ -328,6 +328,8 @@ class UserReport(models.Model):
         travel_history = self.travel_history
         try:
             data = json.loads(travel_history)
+            if not isinstance(data, dict):
+                data = {}
         except Exception:
             data = {}
         has_travel_history = data.get('has_travel_history', False)
