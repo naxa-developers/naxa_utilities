@@ -1,7 +1,7 @@
 from django.contrib import admin
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, Province, ProvinceData, UserRole, \
-    Municipality, District, UserLocation, UserReport, DistrictData, MuniData
+    Municipality, District, UserLocation, UserReport, DistrictData, MuniData, CovidCases
 
 from django.contrib.gis.admin import OSMGeoAdmin
 
@@ -13,6 +13,7 @@ admin.site.register(Province)
 
 admin.site.register(Municipality)
 admin.site.register(District)
+
 
 class ProvinceDataAdmin(admin.ModelAdmin):
     list_filter = ('province_id', 'update_date', 'active')
@@ -48,8 +49,8 @@ class MuniDataAdmin(admin.ModelAdmin):
 
 
 class CovidCasesAdmin(admin.ModelAdmin):
-    list_filter = ('date',)
-    list_display = ('death', 'date')
+    list_filter = ('province_id', 'gender')
+    list_display = ('province_id', 'municipality_id' ,'gender')
     search_fields = ('date',)
 
 
@@ -57,6 +58,7 @@ admin.site.register(ProvinceData, ProvinceDataAdmin)
 admin.site.register(UserRole, UserRoleAdmin)
 admin.site.register(MuniData, MuniDataAdmin)
 admin.site.register(DistrictData, DistrictDataAdmin)
+admin.site.register(CovidCases, CovidCasesAdmin)
 
 
 class MarkerAdmin(OSMGeoAdmin):
