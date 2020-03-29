@@ -329,7 +329,7 @@ class UserLocationApi(viewsets.ModelViewSet):
 
 
 class UserReportApi(viewsets.ModelViewSet):
-    queryset = UserReport.objects.all()
+    queryset = CovidCases.objects.all()
     serializer_class = UserReportSerializer
     pagination_class = StandardResultsSetPagination
 
