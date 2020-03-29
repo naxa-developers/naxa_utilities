@@ -52,7 +52,7 @@ class MuniDataAdmin(admin.ModelAdmin):
 
 class CovidCasesAdmin(admin.ModelAdmin):
     list_filter = ('province_id', 'gender')
-    list_display = ('province_id', 'municipality_id' ,'gender')
+    list_display = ('province_id', 'municipality_id','gender')
     search_fields = ('date',)
 
 
