@@ -329,3 +329,10 @@ class UserReport(models.Model):
 def create_auth_token(sender, instance=None, created=False, **kwargs):
     if created:
         Token.objects.create(user=instance)
+
+
+class GlobalData(models.Model):
+    total_infected_global = models.IntegerField(default=0)
+    total_recovered_global = models.IntegerField(default=0)
+    total_deaths_global = models.IntegerField(default=0)
+    updated_at = models.DateTimeField(auto_now=True)
