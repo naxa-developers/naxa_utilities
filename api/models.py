@@ -312,7 +312,7 @@ class UserReport(models.Model):
     contact_no = models.CharField(max_length=255)
     symptoms = models.TextField(max_length=255)
     travel_history = models.TextField(max_length=255)
-    has_convid_contact = models.BooleanField(default=False)
+    has_convid_contact = models.BooleanField(default=False, blank=True, null=True)
     has_travel_history = models.BooleanField(default=False)
     location = models.PointField(srid=4326, blank=True, null=True)
     lat = models.FloatField(null=True, blank=True, default=0)
