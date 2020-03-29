@@ -148,7 +148,11 @@ class UserReportSerializer(serializers.ModelSerializer):
         fields = "__all__"
 
     def get_result(self, obj):
-        return random.choice(["likely", "morelikely", "lesslikely"])
+        if obj.has_travel_history or obj.has_convid_contact:
+            return "morelikely"
+        if obj.temperature >= 102 and obj.fast_breathe:
+            return "likely"
+        return "lesslikely"
 
 
 class AgeGroupDataSerializer(serializers.ModelSerializer):

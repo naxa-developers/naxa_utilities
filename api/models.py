@@ -1,4 +1,5 @@
 import datetime
+import json
 from django.contrib.auth.models import Group
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
@@ -312,6 +313,7 @@ class UserReport(models.Model):
     symptoms = models.TextField(max_length=255)
     travel_history = models.TextField(max_length=255)
     has_convid_contact = models.BooleanField(default=False)
+    has_travel_history = models.BooleanField(default=False)
     location = models.PointField(srid=4326, blank=True, null=True)
     lat = models.FloatField(null=True, blank=True, default=0)
     long = models.FloatField(null=True, blank=True, default=0)
@@ -323,6 +325,17 @@ class UserReport(models.Model):
             self.long = self.location.x
         elif self.lat and self.long:
             self.location = Point(x=self.long, y=self.lat, srid=4326)
+        travel_history = self.travel_history
+        try:
+            data = json.loads(travel_history)
+            if not isinstance(data, dict):
+                data = {}
+        except Exception:
+            data = {}
+        has_travel_history = data.get('has_travel_history', False)
+        has_convid_contact = data.get('has_convid_contact', False)
+        self.has_convid_contact = has_convid_contact
+        self.has_travel_history = has_travel_history
         super(UserReport, self).save(*args, **kwargs)
 
 
