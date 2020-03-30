@@ -333,8 +333,11 @@ class UserReport(models.Model):
         except Exception:
             data = {}
         has_travel_history = data.get('has_travel_history', False)
+        has_covid_contact = data.get('has_covid_contact', False)
         has_convid_contact = data.get('has_convid_contact', False)
-        self.has_convid_contact = has_convid_contact
+        if not has_covid_contact and has_convid_contact:
+            has_covid_contact = has_convid_contact
+        self.has_convid_contact = has_covid_contact
         self.has_travel_history = has_travel_history
         super(UserReport, self).save(*args, **kwargs)
 
