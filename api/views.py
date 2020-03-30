@@ -386,6 +386,9 @@ class UserReportApi(viewsets.ModelViewSet):
             serializer.save()
 
     def create(self, request, *args, **kwargs):
+        if not request.data.get('lat'):
+            request.data['lat'] = 27.69824026
+            request.data['long'] = 85.422
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
