@@ -353,3 +353,12 @@ class GlobalData(models.Model):
     total_recovered_global = models.IntegerField(default=0)
     total_deaths_global = models.IntegerField(default=0)
     updated_at = models.DateTimeField(auto_now=True)
+
+
+class MobileVersion(models.Model):
+    app_name = models.CharField(max_length=255, blank=True, null=True)
+    version_name = models.CharField(max_length=255, blank=True, null=True)
+    version_code = models.CharField(max_length=255, blank=True, null=True)
+    version_info = models.CharField(max_length=255, blank=True, null=True)
+    alert = models.CharField(max_length=255, blank=True, null=True)
+    alert_link = models.CharField(max_length=255, blank=True, null=True)

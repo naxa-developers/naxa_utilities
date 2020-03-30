@@ -6,11 +6,11 @@ from .serializers import MedicalFacilitySerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
-    GlobalDataSerializer
+    GlobalDataSerializer, MobileVersionSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
-    GlobalData
+    GlobalData, MobileVersion
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination, views, status
@@ -444,6 +444,12 @@ class GlobalDataApi(viewsets.ModelViewSet):
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
+
+
+class VersionDataApi(viewsets.ModelViewSet):
+    queryset = MobileVersion.objects.all()
+    serializer_class = MobileVersionSerializer
+    permission_classes = [AllowAny]
 
 
 class NearFacilityViewSet(views.APIView):
