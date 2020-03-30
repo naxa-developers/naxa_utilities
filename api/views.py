@@ -357,6 +357,7 @@ class UserReportApi(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         temperature = serializer.data['temperature']
+        have_cough = serializer.data['have_cough']
         fast_breathe = serializer.data['fast_breathe']
         travel_history = serializer.data['travel_history']
         try:
@@ -368,6 +369,9 @@ class UserReportApi(viewsets.ModelViewSet):
             data = {}
         has_travel_history = data.get('has_travel_history', False)
         has_convid_contact = data.get('has_convid_contact', False)
+        has_covid_contact = data.get('has_covid_contact', False)
+        if not has_covid_contact and has_convid_contact:
+            has_covid_contact = has_convid_contact
         message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका शारीरिक लक्षण वा " \
                   "यात्रा विवरणका आधारमा तपाइँलाई कोभीड-१९ को संक्रमण हुने" \
                   " सम्भावन कम देखिन्छ। यद्यपि परिक्षणबिना संक्रमण भए नभएको " \
@@ -383,6 +387,13 @@ class UserReportApi(viewsets.ModelViewSet):
                       " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
                       "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
+        elif temperature >= 100 and have_cough:
+            message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
+                      "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
+                      "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
+                      " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
+                      "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
+                      " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
         elif has_travel_history:
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
                       "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
@@ -390,7 +401,7 @@ class UserReportApi(viewsets.ModelViewSet):
                       " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
                       "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
-        elif has_convid_contact:
+        elif has_covid_contact:
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका शारीरिक लक्षण वा " \
                   "यात्रा विवरणका आधारमा तपाइँलाई कोभीड-१९ को संक्रमण हुने" \
                   " सम्भावन कम देखिन्छ। यद्यपि परिक्षणबिना संक्रमण भए नभएको " \
