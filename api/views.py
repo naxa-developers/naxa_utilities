@@ -367,6 +367,7 @@ class UserReportApi(viewsets.ModelViewSet):
     queryset = UserReport.objects.all()
     serializer_class = UserReportSerializer
     pagination_class = StandardResultsSetPagination
+    
 
     def get_permissions(self):
         """
@@ -387,8 +388,11 @@ class UserReportApi(viewsets.ModelViewSet):
 
     def create(self, request, *args, **kwargs):
         if not request.data.get('lat'):
-            request.data['lat'] = 27.69824026
-            request.data['long'] = 85.422
+            request.data['lat'] = random.choice([27.61824026, 27.62824026,
+                                                 27.63824026, 27.64824026])
+            request.data['long'] = random.choice([85.46619027, 85.36619027,
+                                                  85.26619027, 85.16619027,
+                                                  85.56619027])
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
