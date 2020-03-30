@@ -29,5 +29,6 @@ urlpatterns = [
 ]
 
 urlpatterns += [
-    path('api-token-auth/', views.CustomAuthToken.as_view())
+    path('api-token-auth/', views.CustomAuthToken.as_view()),
+    path('api-token-new/', views.create_auth)
 ]

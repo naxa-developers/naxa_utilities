@@ -1,12 +1,15 @@
 import random
+from django.contrib.auth.models import User
 from django.db.models import Sum, Count, Max
+from rest_framework.decorators import api_view
+
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
-    GlobalDataSerializer, MobileVersionSerializer
+    GlobalDataSerializer, MobileVersionSerializer, UserSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
@@ -310,6 +313,36 @@ class CustomAuthToken(ObtainAuthToken):
             'email': user.email,
             'roles': UserRoleSerializer(roles, many=True).data
         })
+
+
+class CustomAuthToken(ObtainAuthToken):
+
+    def post(self, request, *args, **kwargs):
+        serializer = self.serializer_class(data=request.data,
+                                           context={'request': request})
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        token, created = Token.objects.get_or_create(user=user)
+        roles = user.roles.all().select_related("group", "province", "facility")
+        return Response({
+            'token': token.key,
+            'user_id': user.pk,
+            'email': user.email,
+            'roles': UserRoleSerializer(roles, many=True).data
+        })
+
+
+@api_view(['POST'])
+def create_auth(request):
+    serialized = UserSerializer(data=request.DATA)
+    if serialized.is_valid():
+        User.objects.create_user(
+            serialized.init_data['username'],
+            serialized.init_data['password']
+        )
+        return Response(serialized.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serialized._errors, status=status.HTTP_400_BAD_REQUEST)
 
 
 class UserLocationApi(viewsets.ModelViewSet):
