@@ -257,8 +257,8 @@ class UserLocation(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="location",
                              on_delete=models.CASCADE)
     location = models.PointField(srid=4326, blank=True, null=True)
-    lat = models.FloatField(null=True, blank=True, default=0)
-    long = models.FloatField(null=True, blank=True, default=0)
+    lat = models.FloatField(null=True, blank=True, default=27)
+    long = models.FloatField(null=True, blank=True, default=85)
 
     def __str__(self):
         return self.name
@@ -315,8 +315,8 @@ class UserReport(models.Model):
     has_convid_contact = models.BooleanField(default=False, blank=True, null=True)
     has_travel_history = models.BooleanField(default=False)
     location = models.PointField(srid=4326, blank=True, null=True)
-    lat = models.FloatField(null=True, blank=True, default=0)
-    long = models.FloatField(null=True, blank=True, default=0)
+    lat = models.FloatField(null=True, blank=True, default=27.61824026)
+    long = models.FloatField(null=True, blank=True, default=85.56)
     update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
