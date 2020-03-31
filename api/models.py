@@ -256,6 +256,7 @@ class UserLocation(models.Model):
     update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="location",
                              on_delete=models.CASCADE)
+    device_id = models.CharField(max_length=63, blank=True, null=True)
     location = models.PointField(srid=4326, blank=True, null=True)
     lat = models.FloatField(null=True, blank=True, default=27)
     long = models.FloatField(null=True, blank=True, default=85)
@@ -362,3 +363,8 @@ class MobileVersion(models.Model):
     version_info = models.CharField(max_length=255, blank=True, null=True)
     alert = models.CharField(max_length=255, blank=True, null=True)
     alert_link = models.CharField(max_length=255, blank=True, null=True)
+
+
+class Device(models.Model):
+    device_id = models.CharField(max_length=63)
+    registration_id = models.TextField()

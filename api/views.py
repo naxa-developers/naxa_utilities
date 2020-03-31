@@ -9,11 +9,12 @@ from .serializers import MedicalFacilitySerializer, \
     DistrictSerializer, MunicipalitySerializer, UserRoleSerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
-    GlobalDataSerializer, MobileVersionSerializer, UserSerializer
+    GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
+    DeviceSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
-    GlobalData, MobileVersion
+    GlobalData, MobileVersion, Device
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination, views, status
@@ -472,6 +473,21 @@ class AgeGroupDataApi(viewsets.ModelViewSet):
             permission_classes = [IsAuthenticated]
         else:
             permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class DeviceApi(viewsets.ModelViewSet):
+    queryset = Device.objects.all()
+    serializer_class = DeviceSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        # if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+        #     permission_classes = [IsAuthenticated]
+        # else:
+        permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
 

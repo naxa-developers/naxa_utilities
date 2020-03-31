@@ -19,6 +19,7 @@ router.register(r'health-facility2', views.MedicalApi2)
 router.register(r'track-me', views.UserLocationApi)
 router.register(r'user-report', views.UserReportApi)
 router.register(r'age-data', views.AgeGroupDataApi)
+router.register(r'device', views.DeviceApi)
 
 urlpatterns = [
     path('', include(router.urls)),
