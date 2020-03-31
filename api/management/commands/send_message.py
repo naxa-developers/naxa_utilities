@@ -16,7 +16,7 @@ class Command(BaseCommand):
             "Room": "PortugalVSDenmark"
         }
         push_service = FCMNotification(api_key=settings.FCM_API_KEY)
-        registration_ids = Device.objects.all().values_list("device_id",
+        registration_ids = Device.objects.all().values_list("registration_id",
                                                             flat=True)
         result = push_service.multiple_devices_data_message(
             registration_ids=registration_ids, data_message=data_message)
