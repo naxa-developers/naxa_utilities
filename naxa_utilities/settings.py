@@ -136,6 +136,8 @@ REST_FRAMEWORK = {
     ]
 }
 
+FCM_API_KEY = os.environ.get("FCM_API_KEY", "")
+
 try:
     from .local_setting import *
 except Exception as e:
