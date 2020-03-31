@@ -18,6 +18,7 @@ class Command(BaseCommand):
         push_service = FCMNotification(api_key=settings.FCM_API_KEY)
         registration_ids = Device.objects.all().values_list("registration_id",
                                                             flat=True)
+        registration_ids = list(registration_ids)
         result = push_service.multiple_devices_data_message(
             registration_ids=registration_ids, data_message=data_message)
         self.stdout.write('Successfully created ..')
