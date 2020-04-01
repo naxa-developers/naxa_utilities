@@ -396,7 +396,7 @@ def send_fcm_message(sender, instance=None, created=False, **kwargs):
                             click_action="FLUTTER_NOTIFICATION_CLICK")
         registration_ids = Device.objects.all().values_list("registration_id",
                                                             flat=True)
-        registration_ids = list(registration_ids)
+        registration_ids = list(set(list(registration_ids)))
         send_message(data_message, registration_ids)
 
 
