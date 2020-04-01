@@ -18,6 +18,7 @@ router.register(r'health-facility', views.MedicalApi)
 router.register(r'health-facility2', views.MedicalApi2)
 router.register(r'track-me', views.UserLocationApi)
 router.register(r'user-report', views.UserReportApi)
+router.register(r'suspect-report', views.SuspectApi)
 router.register(r'age-data', views.AgeGroupDataApi)
 router.register(r'device', views.DeviceApi)
 

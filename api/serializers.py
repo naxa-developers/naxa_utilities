@@ -4,7 +4,7 @@ from rest_framework import serializers
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
     Municipality, UserRole, UserLocation, UserReport, AgeGroupData, \
-    DistrictData, MuniData, GlobalData, MobileVersion, Device
+    DistrictData, MuniData, GlobalData, MobileVersion, Device, SuspectReport
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
@@ -240,4 +240,11 @@ class DeviceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Device
+        fields = "__all__"
+
+
+class SuspectSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = SuspectReport
         fields = "__all__"

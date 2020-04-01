@@ -311,9 +311,9 @@ class UserReport(models.Model):
     diarrahoe = models.BooleanField(default=True)
     vomit = models.BooleanField(default=True)
     runny_nose = models.BooleanField(default=True)
-    address = models.CharField(max_length=255)
+    address = models.CharField(max_length=255, blank=True, null=True)
     contact_no = models.CharField(max_length=255, blank=True, null=True)
-    symptoms = models.TextField(max_length=255)
+    symptoms = models.TextField(max_length=255, blank=True, null=True)
     travel_history = models.TextField(max_length=255)
     has_convid_contact = models.BooleanField(default=False, blank=True, null=True)
     has_travel_history = models.BooleanField(default=False)
@@ -400,3 +400,10 @@ def send_fcm_message(sender, instance=None, created=False, **kwargs):
         send_message(data_message, registration_ids)
 
 
+class SuspectReport(models.Model):
+    name = models.CharField(max_length=255, blank=True, null=True)
+    age = models.IntegerField(default=0)
+    address = models.CharField(max_length=255, blank=True, null=True)
+    contact_no = models.CharField(max_length=255, blank=True, null=True)
+    country = models.CharField(max_length=255, blank=True, null=True)
+    transit = models.CharField(max_length=255, blank=True, null=True)
