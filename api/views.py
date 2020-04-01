@@ -499,10 +499,11 @@ class SuspectApi(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        # if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
-        #     permission_classes = [IsAuthenticated]
-        # else:
-        permission_classes = [AllowAny]
+        if self.action in ['destroy', 'update', 'partial_update', 'list',
+                           'get', 'retrieve']:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
 
