@@ -392,7 +392,8 @@ class DeviceMessage(models.Model):
 def send_fcm_message(sender, instance=None, created=False, **kwargs):
     if created:
         data_message = dict(type=instance.type, message=instance.message,
-                            title=instance.title, url=instance.url)
+                            title=instance.title, url=instance.url,
+                            click_action="FLUTTER_NOTIFICATION_CLICK")
         registration_ids = Device.objects.all().values_list("registration_id",
                                                             flat=True)
         registration_ids = list(registration_ids)

@@ -37,8 +37,11 @@ class Command(BaseCommand):
             df['result'] = df.apply(get_result, axis=1)
             df.to_excel("output.xlsx")
         elif report_type == "facility":
-            columns = ['province', 'district', 'municipality', 'name',
-                       'category', 'type', 'ownership', 'contact_person',
+            columns = ['id', 'province', 'province__name', 'district',
+                      'district__name', 'municipality', 'municipality__name',
+                      'name', 'category',
+                       'category__name', 'type', 'type__name', 'ownership',
+                       'contact_person',
                        'contact_num', 'used_for_corona_response',
                        'num_of_bed', 'num_of_icu_bed', 'occupied_icu_bed',
                        'num_of_ventilators', 'occupied_ventilators',
