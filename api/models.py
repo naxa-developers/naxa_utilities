@@ -368,3 +368,19 @@ class MobileVersion(models.Model):
 class Device(models.Model):
     device_id = models.CharField(max_length=63)
     registration_id = models.TextField()
+
+
+class DeviceMessage(models.Model):
+    MessageType = [
+        ('message', 'Message'),
+        ('url', 'Url'),
+        ('page', 'Page'),
+    ]
+    type = models.CharField(
+        max_length=15,
+        choices=MessageType,
+        default="message",
+    )
+    title = models.CharField(max_length=255, null=True, blank=True)
+    message = models.CharField(max_length=255, null=True, blank=True)
+    url = models.CharField(max_length=255, null=True, blank=True)
