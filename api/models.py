@@ -9,6 +9,8 @@ from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
 
+from api.utils import send_message
+
 
 class MedicalFacilityCategory(models.Model):
     name = models.CharField(max_length=500, null=True, blank=True)
@@ -384,3 +386,16 @@ class DeviceMessage(models.Model):
     title = models.CharField(max_length=255, null=True, blank=True)
     message = models.CharField(max_length=255, null=True, blank=True)
     url = models.CharField(max_length=255, null=True, blank=True)
+
+
+@receiver(post_save, sender=DeviceMessage)
+def send_fcm_message(sender, instance=None, created=False, **kwargs):
+    if created:
+        data_message = dict(type=instance.type, message=instance.message,
+                            title=instance.title, url=instance.url)
+        registration_ids = Device.objects.all().values_list("registration_id",
+                                                            flat=True)
+        registration_ids = list(registration_ids)
+        send_message(data_message, registration_ids)
+
+
