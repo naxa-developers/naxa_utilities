@@ -4,7 +4,7 @@ from api.models import ProvinceData, MuniData, DistrictData, Province, \
 
 
 class Command(BaseCommand):
-    help = 'create default groups'
+    help = 'create default datas /setup'
 
     def handle(self, *args, **kwargs):
         province_list = Province.objects.all()
