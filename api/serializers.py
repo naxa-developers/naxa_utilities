@@ -160,12 +160,14 @@ class UserReportSerializer(serializers.ModelSerializer):
         Check that lat long present.
         """
         if not data['lat'] or not data['long']:
-            data['lat'] = random.choice([27.61824026, 27.62824026,
-                                                 27.63824026, 27.64824026])
-            data['long'] = random.choice([85.46619027, 85.36619027,
-                                                  85.26619027, 85.16619027,
-                                                  85.56619027])
+            data['lat'] = 27
+            data['long'] = 85
         return super(UserReportSerializer, self).validate(data)
+
+    def get_validation_exclusions(self):
+        exclusions = super(UserReportSerializer,
+                           self).get_validation_exclusions()
+        return exclusions + ['lat', 'long', 'name', 'contact_no']
 
 
 class AgeGroupDataSerializer(serializers.ModelSerializer):

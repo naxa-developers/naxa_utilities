@@ -296,7 +296,7 @@ class UserReport(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="report",
                              blank=True, null=True, on_delete=models.SET_NULL)
     device_id = models.CharField(max_length=63, blank=True, null=True)
-    name = models.CharField(max_length=255)
+    name = models.CharField(max_length=255, blank=True, null=True)
     age = models.IntegerField(default=0)
     gender = models.CharField(default="Male", max_length=63)
     temperature = models.FloatField(default=0.0)
@@ -310,14 +310,14 @@ class UserReport(models.Model):
     vomit = models.BooleanField(default=True)
     runny_nose = models.BooleanField(default=True)
     address = models.CharField(max_length=255)
-    contact_no = models.CharField(max_length=255)
+    contact_no = models.CharField(max_length=255, blank=True, null=True)
     symptoms = models.TextField(max_length=255)
     travel_history = models.TextField(max_length=255)
     has_convid_contact = models.BooleanField(default=False, blank=True, null=True)
     has_travel_history = models.BooleanField(default=False)
     location = models.PointField(srid=4326, blank=True, null=True)
-    lat = models.FloatField(null=True, blank=True, default=27.61824026)
-    long = models.FloatField(null=True, blank=True, default=85.56)
+    lat = models.FloatField(null=True, blank=True, default=27)
+    long = models.FloatField(null=True, blank=True, default=85)
     update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
 
     def save(self, *args, **kwargs):
