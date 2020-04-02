@@ -10,11 +10,11 @@ from .serializers import MedicalFacilitySerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
-    DeviceSerializer
+    DeviceSerializer, SuspectSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
-    GlobalData, MobileVersion, Device
+    GlobalData, MobileVersion, Device, SuspectReport
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination, views, status
@@ -429,7 +429,7 @@ class UserReportApi(viewsets.ModelViewSet):
                       "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
             result = "morelikely"
-        elif temperature >= 100 and have_cough:
+        elif temperature >= 102 and have_cough:
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
                       "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
                       "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
@@ -446,13 +446,12 @@ class UserReportApi(viewsets.ModelViewSet):
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
             result = "morelikely"
         elif has_covid_contact:
-            message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका शारीरिक लक्षण वा " \
-                  "यात्रा विवरणका आधारमा तपाइँलाई कोभीड-१९ को संक्रमण हुने" \
-                  " सम्भावन कम देखिन्छ। यद्यपि परिक्षणबिना संक्रमण भए नभएको " \
-                  "थाहा नहुने हुनाले सकेसम्म हुलमुलमा नगई बाह्य सम्पर्क कम गरि " \
-                  "संक्रमण फैलिन नदिन सहयोग गर्नुहोस्। तपाइलाई संका भएमा थप " \
-                  "परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा नजिकको कोभिड-१९ " \
-                  "सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।"
+            message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
+                      "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
+                      "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
+                      " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
+                      "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
+                      " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
             result = "morelikely"
 
         headers = self.get_success_headers(serializer.data)
@@ -488,6 +487,22 @@ class DeviceApi(viewsets.ModelViewSet):
         #     permission_classes = [IsAuthenticated]
         # else:
         permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class SuspectApi(viewsets.ModelViewSet):
+    queryset = SuspectReport.objects.all()
+    serializer_class = SuspectSerializer
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action in ['destroy', 'update', 'partial_update', 'list',
+                           'get', 'retrieve']:
+            permission_classes = [IsAuthenticated]
+        else:
+            permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
 
