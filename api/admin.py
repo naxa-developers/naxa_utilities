@@ -30,6 +30,13 @@ class DistrictAdmin(admin.ModelAdmin):
     search_fields = ('province_id', )
 
 
+class MunicipalityAdmin(admin.ModelAdmin):
+    list_filter = ('province_id', 'district_id')
+    list_display = ('municipality_id', 'district_id', 'province_id', 'name')
+    search_fields = ('province_id', )
+
+
+admin.site.register(Municipality, MunicipalityAdmin)
 admin.site.register(District, DistrictAdmin)
 
 class UserRoleAdmin(admin.ModelAdmin):
