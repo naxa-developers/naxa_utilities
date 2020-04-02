@@ -324,6 +324,7 @@ class UserReport(models.Model):
     lat = models.FloatField(null=True, blank=True, default=27)
     long = models.FloatField(null=True, blank=True, default=85)
     update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
+    result = models.CharField(max_length=255, default="lesslikely")
 
     def save(self, *args, **kwargs):
         if self.location:
@@ -345,8 +346,20 @@ class UserReport(models.Model):
             has_covid_contact = has_convid_contact
         self.has_convid_contact = has_covid_contact
         self.has_travel_history = has_travel_history
+        self.result = self.get_result
         super(UserReport, self).save(*args, **kwargs)
 
+    @property
+    def get_result(self):
+        if self.has_travel_history or self.has_convid_contact:
+            return "morelikely"
+        elif self.temperature >= 102 and self.fast_breathe:
+            return "likely"
+        elif self.temperature >= 102 and self.have_cough:
+            return "likely"
+        elif self.temperature >= 102 and self.have_fatigue:
+            return "likely"
+        return "lesslikely"
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):

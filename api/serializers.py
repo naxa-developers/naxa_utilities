@@ -142,18 +142,10 @@ class UserLocationSerializer(serializers.ModelSerializer):
 
 
 class UserReportSerializer(serializers.ModelSerializer):
-    result = serializers.SerializerMethodField()
 
     class Meta:
         model = UserReport
         fields = "__all__"
-
-    def get_result(self, obj):
-        if obj.has_travel_history or obj.has_convid_contact:
-            return "morelikely"
-        if obj.temperature >= 102 and obj.fast_breathe:
-            return "likely"
-        return "lesslikely"
 
     def validate(self, data):
         """
@@ -168,6 +160,13 @@ class UserReportSerializer(serializers.ModelSerializer):
         exclusions = super(UserReportSerializer,
                            self).get_validation_exclusions()
         return exclusions + ['lat', 'long', 'name', 'contact_no']
+
+
+class SmallUserReportSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = UserReport
+        fields = ('id', 'lat', 'long')
 
 
 class AgeGroupDataSerializer(serializers.ModelSerializer):
