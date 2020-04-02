@@ -29,7 +29,7 @@ class DistrictAdmin(admin.ModelAdmin):
 
 class MunicipalityAdmin(admin.ModelAdmin):
     list_filter = ('province_id', 'district_id')
-    list_display = ('district_id', 'province_id', 'name')
+    list_display = ('municipality_id', 'district_id', 'province_id', 'name')
     search_fields = ('province_id', )
 
 
