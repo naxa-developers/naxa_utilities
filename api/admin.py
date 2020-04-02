@@ -11,9 +11,6 @@ from django.contrib.gis.admin import OSMGeoAdmin
 admin.site.register(MedicalFacilityCategory)
 admin.site.register(MedicalFacilityType)
 admin.site.register(Province)
-
-admin.site.register(Municipality)
-
 admin.site.register(GlobalData)
 admin.site.register(DeviceMessage)
 
