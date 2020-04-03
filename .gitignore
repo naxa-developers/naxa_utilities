@@ -57,4 +57,9 @@ Dockerfile
 #IDE
 .idea
 
+django_env
+docker-compose.yml
+Dockerfile.postgis
+postgis _env
+
 

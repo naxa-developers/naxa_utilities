@@ -1,0 +1,57 @@
+version: "3"
+
+volumes:
+  local_postgres_data: {}
+  local_postgres_data_backups: {}
+
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nz01
+    ports:
+      - "8021:8000"
+    volumes:
+      - ./src:/src
+      - ./config/nginx:/etc/nginx/conf.d
+    depends_on:
+      - web
+    networks:
+      - djangonetwork
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.sample
+    container_name: covid_web
+    depends_on:
+      - db
+    volumes:
+      - .:/srv
+    expose:
+      - "8000"
+    env_file:
+      - ./django_env.sample
+    networks:
+      - djangonetwork
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgis.sample
+    container_name: covid_db
+    env_file:
+      - ./postgis_env.sample
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - postgres_data_backups:/backups
+    networks:
+      - djangonetwork
+  redis:
+    image: redis:alpine
+    container_name: covid_redis
+    ports:
+      - "6379:6379"
+    networks:
+      - djangonetwork
+
+networks:
+  djangonetwork:
+    driver: bridge
