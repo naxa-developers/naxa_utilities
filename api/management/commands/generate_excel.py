@@ -8,6 +8,8 @@ def travel_data(r):
     travel_history = r.travel_history
     try:
         data = json.loads(travel_history)
+        if not isinstance(data, dict):
+            data = {}
     except:
         data = {}
     country_name = data.get('country_name', '')
