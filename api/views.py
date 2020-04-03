@@ -10,7 +10,7 @@ from .serializers import MedicalFacilitySerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
-    DeviceSerializer, SuspectSerializer
+    DeviceSerializer, SuspectSerializer, SmallUserReportSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
@@ -37,6 +37,13 @@ class StandardResultsSetPagination(pagination.PageNumberPagination):
     page_size = 100
     page_size_query_param = 'page_size'
     max_page_size = 1000
+
+
+class BigResultsSetPagination(pagination.PageNumberPagination):
+    page_size = 1000
+    page_size_query_param = 'page_size'
+    max_page_size = 1000
+
 
 NationalHotine = "9851255834, 9851255837, 9851255839 :8 AM – 8 PM: 1115:(6 AM – 10 PM)"
 
@@ -315,24 +322,6 @@ class CustomAuthToken(ObtainAuthToken):
             'roles': UserRoleSerializer(roles, many=True).data
         })
 
-
-class CustomAuthToken(ObtainAuthToken):
-
-    def post(self, request, *args, **kwargs):
-        serializer = self.serializer_class(data=request.data,
-                                           context={'request': request})
-        serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        token, created = Token.objects.get_or_create(user=user)
-        roles = user.roles.all().select_related("group", "province", "facility")
-        return Response({
-            'token': token.key,
-            'user_id': user.pk,
-            'email': user.email,
-            'roles': UserRoleSerializer(roles, many=True).data
-        })
-
-
 @api_view(['POST'])
 def create_auth(request):
     serialized = UserSerializer(data=request.DATA)
@@ -367,8 +356,28 @@ class UserLocationApi(viewsets.ModelViewSet):
 class UserReportApi(viewsets.ModelViewSet):
     queryset = UserReport.objects.all()
     serializer_class = UserReportSerializer
-    pagination_class = StandardResultsSetPagination
-    
+    small_serializer_class = SmallUserReportSerializer
+    pagination_class = BigResultsSetPagination
+
+    def get_serializer_class(self):
+        data_type = self.request.query_params.get('data_type', "all")
+        if data_type == "all":
+            return super(UserReportApi, self).get_serializer_class()
+        return self.small_serializer_class
+
+    def list(self, request, *args, **kwargs):
+        data_type = self.request.query_params.get('data_type', "all")
+        if data_type =="all":
+            return super(UserReportApi, self).list(request, *args, **kwargs)
+        queryset = self.filter_queryset(self.get_queryset().filter(
+            result=data_type))
+        page = self.paginate_queryset(queryset)
+        if page is not None:
+            serializer = self.get_serializer(page, many=True)
+            return self.get_paginated_response(serializer.data)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
     def get_permissions(self):
         """
@@ -478,6 +487,13 @@ class AgeGroupDataApi(viewsets.ModelViewSet):
 class DeviceApi(viewsets.ModelViewSet):
     queryset = Device.objects.all()
     serializer_class = DeviceSerializer
+
+    def create(self, request, *args, **kwargs):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        # headers = self.get_success_headers(serializer.data)
+        return Response({}, status=status.HTTP_201_CREATED)
 
     def get_permissions(self):
         """
