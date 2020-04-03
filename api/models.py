@@ -387,6 +387,14 @@ class Device(models.Model):
     device_id = models.CharField(max_length=63)
     registration_id = models.TextField()
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        if not Device.objects.filter(
+                device_id=self.device_id,
+                registration_id=self.registration_id).exists():
+            super(Device, self).save(
+                force_insert, force_update, using, update_fields)
+
 
 class DeviceMessage(models.Model):
     MessageType = [
