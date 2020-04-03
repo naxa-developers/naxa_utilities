@@ -113,6 +113,7 @@ class StatsAPI(viewsets.ModelViewSet):
             update_date=Max('update_date'),
             confirmed=Sum('total_positive'),
             isolation=Sum('total_in_isolation'),
+            total_recovered=Sum('total_recovered'),
             death=Sum('total_death'),
             icu=Sum('num_of_icu_bed'),
             occupied_icu=Sum('occupied_icu_bed'),
