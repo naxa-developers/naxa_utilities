@@ -1,19 +1,22 @@
+import json
 import pandas as pd
 from api.models import UserReport, MedicalFacility
 from django.core.management.base import BaseCommand
 
 
-def get_result(r):
-    if r.has_convid_contact or r.has_travel_history:
-        return "morelikely"
-    elif r.temperature >= 102 and r.have_cough:
-        return "likely"
-    elif r.temperature >= 102 and r.have_fatigue:
-        return "likely"
-    elif r.temperature >= 102 and r.fast_breathe:
-        return "likely"
-    else:
-        return "lesslikely"
+def travel_data(r):
+    travel_history = r.travel_history
+    try:
+        data = json.loads(travel_history)
+        if not isinstance(data, dict):
+            data = {}
+    except:
+        data = {}
+    country_name = data.get('country_name', '')
+    flight_name = data.get('flight_name', '')
+    transit_names = data.get('transit_names', '')
+    return country_name, flight_name, transit_names
+
 
 
 class Command(BaseCommand):
@@ -30,11 +33,14 @@ class Command(BaseCommand):
                        'have_throat_pain', 'fast_breathe', 'body_pain',
                        'diarrahoe', 'vomit', 'runny_nose', 'address',
                        'contact_no',
-                       'symptoms', 'has_convid_contact', 'has_travel_history']
+                       'symptoms', 'has_convid_contact',
+                       'has_travel_history', 'result', 'travel_history']
 
             query = UserReport.objects.all().values(*columns)
             df = pd.DataFrame(query, columns=columns)
-            df['result'] = df.apply(get_result, axis=1)
+            df[['country_name', 'flight_name', 'transit_names']] = df.apply(
+                travel_data, axis=1, result_type="expand")
+            del df['travel_history']
             df.to_excel("output.xlsx")
         elif report_type == "facility":
             columns = ['id', 'province', 'province__name', 'district',
@@ -53,6 +59,3 @@ class Command(BaseCommand):
             df = pd.DataFrame(query, columns=columns)
             df.to_excel("medical_facility.xlsx")
 
-
-
-        
