@@ -25,19 +25,19 @@ class Command(BaseCommand):
         upper_range = len(df)
         print(upper_range, "UPPERRRRRRRRRRRRRRRRR   ")
 
-        municipalities = list(df.Municipality.unique())
-        for m in municipalities:
-            Municipality.objects.get_or_create(name=m)
-
-        districts = list(df.District.unique())
-        for m in districts:
-            District.objects.get_or_create(name=m)
+        # municipalities = list(df.Municipality.unique())
+        # for m in municipalities:
+        #     Municipality.objects.get_or_create(name=m)
+        #
+        # districts = list(df.District.unique())
+        # for m in districts:
+        #     District.objects.get_or_create(name=m)
         print("Wait Data is being Loaded")
         objects = [
             AgeGroupData(
-                municipality=Municipality.objects.get(name=str((df[
-                    'Municipality'][
-                    row]))),
+                # municipality=Municipality.objects.filter(name=str((df[
+                #     'Municipality'][
+                #     row]))),
                 district=District.objects.get(name=str((df[
                     'District'][
                     row]))),
