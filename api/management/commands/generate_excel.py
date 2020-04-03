@@ -40,6 +40,7 @@ class Command(BaseCommand):
             df = pd.DataFrame(query, columns=columns)
             df[['country_name', 'flight_name', 'transit_names']] = df.apply(
                 travel_data, axis=1, result_type="expand")
+            del df['travel_history']
             df.to_excel("output.xlsx")
         elif report_type == "facility":
             columns = ['id', 'province', 'province__name', 'district',
@@ -58,6 +59,3 @@ class Command(BaseCommand):
             df = pd.DataFrame(query, columns=columns)
             df.to_excel("medical_facility.xlsx")
 
-
-
-        
