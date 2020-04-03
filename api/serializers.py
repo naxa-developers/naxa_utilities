@@ -166,7 +166,7 @@ class SmallUserReportSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserReport
-        fields = ('id', 'lat', 'long', 'result')
+        fields = ('id', 'lat', 'long')
 
 
 class AgeGroupDataSerializer(serializers.ModelSerializer):
