@@ -127,9 +127,13 @@ class ProvinceData(models.Model):
     num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
     occupied_isolation_bed = models.IntegerField(null=True, blank=True,
                                                  default=0)
+    total_samples_collected = models.IntegerField(null=True,
+                                                  blank=True, default=0)
+    total_samples_pending = models.IntegerField(null=True, blank=True, default=0)
     total_tested = models.IntegerField(null=True, blank=True, default=0)
     total_recovered = models.IntegerField(null=True, blank=True, default=0)
     total_positive = models.IntegerField(null=True, blank=True, default=0)
+    total_negative = models.IntegerField(null=True, blank=True, default=0)
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
