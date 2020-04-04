@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+  <style>
+  #map
+  {
+     height: 1000px; 
+     }
+  </style>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.css"/>
+
+<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet-ajax/2.1.0/leaflet.ajax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet.draw/1.0.4/leaflet.draw.js"></script>
+
+  </head>
+  <body>
+    <div id="map"></div>
+
+
+
+
+   
+
+    <script>
+    
+    var mymap = L.map('map').setView([27.687632298881745,85.33518791198732], 13);
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+}).addTo(mymap);
+
+var fed_url="/api/v1/geojson/report"
+
+federal_boundary = new L.geoJson.ajax(fed_url, {
+
+
+
+  pointToLayer: function(feature,lnglat)
+        {
+// console.log(feature)
+
+          // icons=L.icon({
+          //     iconSize: [26, 33],
+          //     iconAnchor: [13, 27],
+          //     popupAnchor:  [2, -24],
+
+          //     // iconUrl:style.icon
+          //   });
+          //   var marker = L.marker(lnglat);
+          //   return marker;
+          let options = {
+            fillColor: 'red',
+                                weight: 5,
+                                opacity: 0.5,
+                                color: 'blue',
+                                radius: '15',
+                                fillOpacity: 0.9
+            }
+
+  return L.circleMarker( lnglat, options );
+
+        },
+
+    onEachFeature: function (feature, layer) {
+          layer.bindPopup(feature.properties.name)
+
+                            style = ({
+                              color: 'red',
+                              fillColor: '#f03',
+                              fillOpacity: 0.5,
+                              radius: 500
+
+                            });
+
+                            // layer.setStyle(style);
+
+    }
+
+
+
+}).addTo(mymap)
+
+        
+    // Initialise the FeatureGroup to store editable layers
+var editableLayers = new L.FeatureGroup();
+mymap.addLayer(editableLayers);
+
+var drawPluginOptions = {
+  position: 'topright',
+  draw: {
+    polygon: {
+      allowIntersection: false, // Restricts shapes to simple polygons
+      drawError: {
+        color: '#e1e100', // Color the shape will turn when intersects
+        message: '<strong>Oh snap!<strong> you can\'t draw that!' // Message that will show when intersect
+      },
+      shapeOptions: {
+        color: '#97009c'
+      }
+    },
+    // disable toolbar item by setting it to false
+    polyline: false,
+    circle: false, // Turns off this drawing tool
+    rectangle: false,
+    marker: false,
+    },
+  edit: {
+    featureGroup: editableLayers, //REQUIRED!!
+    remove: false
+  }
+};
+
+// Initialise the draw control and pass it the FeatureGroup of editable layers
+var drawControl = new L.Control.Draw(drawPluginOptions);
+mymap.addControl(drawControl);
+
+var editableLayers = new L.FeatureGroup();
+mymap.addLayer(editableLayers);
+
+mymap.on('draw:created', function(e) {
+  var type = e.layerType,
+    layer = e.layer;
+
+  if (type === 'marker') {
+    layer.bindPopup('A popup!');
+  }
+
+  editableLayers.addLayer(layer);
+});    
+
+        
+    </script>
+  </body>
+</html>
