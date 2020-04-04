@@ -117,6 +117,11 @@ class MedicalFacility(models.Model):
         super(MedicalFacility, self).save(*args, **kwargs)
 
 
+class ActiveManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().filter(active=True)
+
+
 class ProvinceData(models.Model):
     province_id = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='Province')
     total_samples_collected = models.IntegerField("Total No. of Samples "
@@ -146,7 +151,7 @@ class ProvinceData(models.Model):
     total_death = models.IntegerField("Total No Deaths (मृत्यु "
                                       "भएको)", null=True, blank=True, default=0)
 
-    total_recovered = models.IntegerField("Total no Recovered निको भएको", 
+    total_recovered = models.IntegerField("Total no Recovered निको भएको",
                                           null=True, blank=True, default=0)
     num_of_bed = models.IntegerField(null=True, blank=True, default=0)
     num_of_icu_bed = models.IntegerField(null=True, blank=True, default=0)
@@ -159,6 +164,7 @@ class ProvinceData(models.Model):
     active = models.BooleanField(default=True)
     update_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     hotline = models.TextField()
+    objects = ActiveManager()
 
     def save(self, *args, **kwargs):
         if not self.pk:
