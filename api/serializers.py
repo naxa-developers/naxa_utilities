@@ -187,6 +187,18 @@ class SpaceSerializer(serializers.ModelSerializer):
         return str("{0:.3f}".format(a)) + 'km'
 
 
+class NearUserSerializer(serializers.ModelSerializer):
+    distance = serializers.SerializerMethodField()
+
+    class Meta:
+        model = UserReport
+        exclude = ('tavel_history',)
+
+    def get_distance(self, obj):
+        a = float(''.join([x for x in str(obj.distance) if x != 'm']).strip()) / 1000
+        return str("{0:.3f}".format(a)) + 'km'
+
+
 class DistrictDataSerializer(serializers.ModelSerializer):
     facility_count = serializers.SerializerMethodField()
 

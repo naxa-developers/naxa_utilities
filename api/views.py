@@ -10,7 +10,8 @@ from .serializers import MedicalFacilitySerializer, \
     UserLocationSerializer, UserReportSerializer, AgeGroupDataSerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
-    DeviceSerializer, SuspectSerializer, SmallUserReportSerializer
+    DeviceSerializer, SuspectSerializer, SmallUserReportSerializer, \
+    NearUserSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
@@ -532,7 +533,7 @@ class VersionDataApi(viewsets.ModelViewSet):
 
 
 class NearFacilityViewSet(views.APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         params = request.query_params
@@ -553,7 +554,7 @@ class NearFacilityViewSet(views.APIView):
 
 
 class SpaceGeojsonViewSet(views.APIView):
-    permission_classes = []
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
         serializers = serialize(
@@ -577,3 +578,27 @@ class SpaceGeojsonViewSet(views.APIView):
                                                'total_positive','total_tested'))
         geojson = json.loads(serializers)
         return Response(geojson)
+
+
+class NearUserReportViewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        params = request.query_params
+        longitude = params['long']
+        latitude = params['lat']
+        result = params['result']
+        km = params['km']
+
+        user_location = GEOSGeometry(
+            'POINT({} {})'.format(longitude, latitude), srid=4326)
+        resource_queryset = UserReport.objects.filter(result=result).filter(
+            location__distance_lte=(user_location, D(km=km))).annotate(
+            distance=Distance(
+                'location', user_location)).order_by('distance')[:25]
+        resource_json = NearUserSerializer(resource_queryset, many=True)
+        json_data = JSONRenderer().render(resource_json.data)
+        stream = io.BytesIO(json_data)
+        data = JSONParser().parse(stream)
+        return Response(data)
+
