@@ -192,7 +192,7 @@ class NearUserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserReport
-        exclude = ('tavel_history',)
+        exclude = ('travel_history',)
 
     def get_distance(self, obj):
         a = float(''.join([x for x in str(obj.distance) if x != 'm']).strip()) / 1000
