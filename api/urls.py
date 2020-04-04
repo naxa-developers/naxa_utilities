@@ -2,13 +2,14 @@ from django.urls import path, include
 from api import views
 from rest_framework.routers import DefaultRouter
 
-from api.views import NearFacilityViewSet, SpaceGeojsonViewSet
+from api.views import NearFacilityViewSet, SpaceGeojsonViewSet, \
+    NearUserReportViewSet
 
 router = DefaultRouter()
 router.register(r'province', views.ProvinceApi)
 router.register(r'district', views.DistrictApi)
 router.register(r'municipality', views.MunicipalityApi)
-# router.register(r'province-data', views.ProvinceDataApi)
+router.register(r'province-data', views.ProvinceDataApi)
 router.register(r'positive-cases', views.CaseApi)
 router.register(r'global-data', views.GlobalDataApi)
 router.register(r'mobile-version', views.VersionDataApi)
@@ -26,7 +27,8 @@ urlpatterns = [
     path('', include(router.urls)),
     path('stats/', views.StatsAPI.as_view(
         {'get': 'list'})),
-    path('near-facility/', NearFacilityViewSet.as_view(), name="api"),
+    path('near-facility/', NearFacilityViewSet.as_view(), name="fac-api"),
+    path('near-report/', NearUserReportViewSet.as_view(), name="user-api"),
     path('geojson/facility/', SpaceGeojsonViewSet.as_view(), name="space"),
 ]
 
