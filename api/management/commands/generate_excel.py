@@ -18,7 +18,6 @@ def travel_data(r):
     return country_name, flight_name, transit_names
 
 
-
 class Command(BaseCommand):
     help = 'create excel report'
 

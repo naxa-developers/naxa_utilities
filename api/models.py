@@ -119,6 +119,35 @@ class MedicalFacility(models.Model):
 
 class ProvinceData(models.Model):
     province_id = models.ForeignKey(Province, on_delete=models.CASCADE, related_name='Province')
+    total_samples_collected = models.IntegerField("Total No. of Samples "
+                                                  "Collected (नमुना संकलन "
+                                                  "गरिएको)", null=True,
+                                                  blank=True, default=0)
+    total_tested = models.IntegerField("Total No. of"
+                                       " Samples Examined (परिक्षण गरिएको)",
+                                       null=True, blank=True, default=0)
+
+    total_negative = models.IntegerField("Total Negetive (संक्रमण "
+                                         "नदेखिएको)",
+                                         null=True, blank=True, default=0)
+
+    total_in_isolation = models.IntegerField(
+        "Total No in Isolations (आइसोलेसनमा)", null=True, blank=True, default=0)
+
+    total_positive = models.IntegerField("Total No of +ve Infections (संक्रमण "
+                                         "देखिएको)",
+                                         null=True, blank=True, default=0)
+
+    total_samples_pending = models.IntegerField("Total No of Pending Cases ("
+                                                "Test Pending)",
+                                                null=True,
+                                                blank=True, default=0)
+
+    total_death = models.IntegerField("Total No Deaths (मृत्यु "
+                                      "भएको)", null=True, blank=True, default=0)
+
+    total_recovered = models.IntegerField("Total no Recovered निको भएको", 
+                                          null=True, blank=True, default=0)
     num_of_bed = models.IntegerField(null=True, blank=True, default=0)
     num_of_icu_bed = models.IntegerField(null=True, blank=True, default=0)
     occupied_icu_bed = models.IntegerField(null=True, blank=True, default=0)
@@ -127,15 +156,6 @@ class ProvinceData(models.Model):
     num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
     occupied_isolation_bed = models.IntegerField(null=True, blank=True,
                                                  default=0)
-    total_samples_collected = models.IntegerField(null=True,
-                                                  blank=True, default=0)
-    total_samples_pending = models.IntegerField(null=True, blank=True, default=0)
-    total_tested = models.IntegerField(null=True, blank=True, default=0)
-    total_recovered = models.IntegerField(null=True, blank=True, default=0)
-    total_positive = models.IntegerField(null=True, blank=True, default=0)
-    total_negative = models.IntegerField(null=True, blank=True, default=0)
-    total_death = models.IntegerField(null=True, blank=True, default=0)
-    total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
     update_date = models.DateTimeField(auto_now=True, null=True, blank=True)
     hotline = models.TextField()
@@ -241,7 +261,6 @@ class CovidCases(models.Model):
     date = models.DateField(null=True, blank=True)
     returned_date = models.DateField(null=True, blank=True)
     detected_date = models.DateField(null=True, blank=True)
-
 
 
 class UserRole(models.Model):
@@ -356,13 +375,10 @@ class UserReport(models.Model):
 
     @property
     def get_result(self):
-        if self.has_travel_history or self.has_convid_contact:
+        if self.temperature >= 100 and self.have_cough and (
+                self.has_travel_history or self.has_convid_contact):
             return "morelikely"
-        elif self.temperature >= 102 and self.fast_breathe:
-            return "likely"
-        elif self.temperature >= 102 and self.have_cough:
-            return "likely"
-        elif self.temperature >= 102 and self.have_fatigue:
+        elif self.has_travel_history or self.has_convid_contact:
             return "likely"
         return "lesslikely"
 
