@@ -36,7 +36,7 @@ class Command(BaseCommand):
         for index, row in df.iterrows():
             if row["id"]:
                 print(row)
-                m = Municipality.objects.get(mun_id=row["municipality_id"])
+                m = Municipality.objects.get(mun_id=row["mun_id"])
                 new_ob = MedicalFacility(municipality=m, name=row["name"],
                     category=MedicalFacilityCategory.objects.get(pk=row[
                         "category"]), type=MedicalFacilityType.objects.get(
