@@ -42,8 +42,10 @@ class Command(BaseCommand):
             del df['travel_history']
             df.to_excel("output.xlsx")
         elif report_type == "facility":
-            columns = ['id', 'province', 'province__name', 'district',
-                      'district__name', 'municipality', 'municipality__name',
+            columns = ['id', 'province__province_id', 'province__name',
+                       'district__district_id',
+                      'district__name', 'municipality__mun_id',
+                       'municipality__name',
                       'name', 'category',
                        'category__name', 'type', 'type__name', 'ownership',
                        'contact_person',
