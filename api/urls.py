@@ -3,7 +3,8 @@ from api import views
 from rest_framework.routers import DefaultRouter
 
 from api.views import NearFacilityViewSet, SpaceGeojsonViewSet, \
-    NearUserReportViewSet
+    NearUserReportViewSet, NearUserGeojsonViewSet
+from api.views_template import MapView
 
 router = DefaultRouter()
 router.register(r'province', views.ProvinceApi)
@@ -30,6 +31,9 @@ urlpatterns = [
     path('near-facility/', NearFacilityViewSet.as_view(), name="fac-api"),
     path('near-report/', NearUserReportViewSet.as_view(), name="user-api"),
     path('geojson/facility/', SpaceGeojsonViewSet.as_view(), name="space"),
+    path('geojson/report/', NearUserGeojsonViewSet.as_view(),
+         name="user-geojson"),
+    path('map', MapView.as_view(), name="map"),
 ]
 
 urlpatterns += [

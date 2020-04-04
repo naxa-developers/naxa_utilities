@@ -602,3 +602,13 @@ class NearUserReportViewSet(views.APIView):
         data = JSONParser().parse(stream)
         return Response(data)
 
+
+class NearUserGeojsonViewSet(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request):
+        serializers = serialize(
+            'geojson', UserReport.objects.filter(result="morelikely"),
+            geometry_field='location', fields=('pk', 'name', 'location'))
+        geojson = json.loads(serializers)
+        return Response(geojson)
