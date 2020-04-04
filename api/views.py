@@ -106,10 +106,13 @@ class StatsAPI(viewsets.ModelViewSet):
             data = MuncDataSerializer(queryset, many=True).data
             return Response(data)
         facility_count = MedicalFacility.objects.all().count()
-        tested = MedicalFacility.objects.aggregate(
-            tested=Sum('total_tested'))
+        # tested = MedicalFacility.objects.aggregate(
+        #     tested=Sum('total_tested'))
         data = queryset.aggregate(
-            # tested=Sum('total_tested'),
+            tested=Sum('total_tested'),
+            total_samples_collected=Sum('total_samples_collected'),
+            total_samples_pending=Sum('total_samples_pending'),
+            total_negative=Sum('total_negative'),
             update_date=Max('update_date'),
             confirmed=Sum('total_positive'),
             isolation=Sum('total_in_isolation'),
@@ -122,7 +125,7 @@ class StatsAPI(viewsets.ModelViewSet):
             isolation_bed=Sum('num_of_isolation_bed'),
             occupied_isolation_bed=Sum('occupied_ventilators'),
         )
-        data.update(tested)
+        # data.update(tested)
         data.update({'facility_count': facility_count})
         data.update({"hotline": NationalHotine})
         return Response(data)
@@ -409,7 +412,6 @@ class UserReportApi(viewsets.ModelViewSet):
         self.perform_create(serializer)
         temperature = serializer.data['temperature']
         have_cough = serializer.data['have_cough']
-        fast_breathe = serializer.data['fast_breathe']
         travel_history = serializer.data['travel_history']
         try:
             data = json.loads(travel_history)
@@ -431,7 +433,8 @@ class UserReportApi(viewsets.ModelViewSet):
                   "परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा नजिकको कोभिड-१९ " \
                   "सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।"
         result = "lesslikely"
-        if temperature >= 102 and fast_breathe:
+        if temperature >= 100 and have_cough and (has_travel_history or \
+                has_covid_contact):
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
                       "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
                       "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
@@ -439,30 +442,14 @@ class UserReportApi(viewsets.ModelViewSet):
                       "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
             result = "morelikely"
-        elif temperature >= 102 and have_cough:
+        elif has_travel_history or has_covid_contact:
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
                       "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
                       "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
                       " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
                       "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
-            result = "morelikely"
-        elif has_travel_history:
-            message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
-                      "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
-                      "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
-                      " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
-                      "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
-                      " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
-            result = "morelikely"
-        elif has_covid_contact:
-            message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
-                      "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
-                      "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
-                      " नजिकको कोभिड-१९ सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको " \
-                      "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
-                      " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
-            result = "morelikely"
+            result = "likely"
 
         headers = self.get_success_headers(serializer.data)
         return Response({"message": message, "result":result},
