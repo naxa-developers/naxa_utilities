@@ -281,6 +281,7 @@ class ProvinceDataApi(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
+        queryset = ProvinceData.objects.order_by('id')
         province_id = self.request.query_params.get("province_id")
         if province_id is not None:
             queryset = self.queryset.filter(province_id=province_id)
