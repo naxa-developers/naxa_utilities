@@ -284,7 +284,7 @@ class ProvinceDataApi(viewsets.ModelViewSet):
         province_id = self.request.query_params.get("province_id")
         if province_id:
             return self.queryset.filter(province_id=province_id)
-        super(ProvinceDataApi, self).get_queryset()
+        return self.queryset
 
 
 class DistrictDataApi(viewsets.ModelViewSet):
