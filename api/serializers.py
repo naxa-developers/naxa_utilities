@@ -98,6 +98,7 @@ class MunicipalitySerializer(serializers.ModelSerializer):
 
 class ProvinceDataSerializer(serializers.ModelSerializer):
     facility_count = serializers.SerializerMethodField()
+    province_name = serializers.SerializerMethodField()
 
     class Meta:
         model = ProvinceData
@@ -107,6 +108,9 @@ class ProvinceDataSerializer(serializers.ModelSerializer):
         if hasattr(obj, "facility_count"):
             return obj.facility_count
         return MedicalFacility.objects.filter(province=obj.province_id).count()
+
+    def get_province_name(self, obj):
+        return obj.province.name
 
 
 class UserRoleSerializer(serializers.ModelSerializer):
