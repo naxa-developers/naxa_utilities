@@ -280,10 +280,10 @@ class ProvinceDataApi(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
-    def filter_queryset(self, queryset):
+    def get_queryset(self):
         province_id = self.request.query_params.get("province_id")
-        if province_id:
-            return queryset.filter(province_id=province_id)
+        if province_id is not None:
+            queryset = self.queryset.filter(province_id=province_id)
         return queryset
 
 
