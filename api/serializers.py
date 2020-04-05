@@ -110,7 +110,7 @@ class ProvinceDataSerializer(serializers.ModelSerializer):
         return MedicalFacility.objects.filter(province=obj.province_id).count()
 
     def get_province_name(self, obj):
-        return obj.province.name
+        return obj.province_id.name
 
 
 class UserRoleSerializer(serializers.ModelSerializer):
