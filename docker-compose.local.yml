@@ -11,13 +11,21 @@ services:
       - ./postgres-data:/var/lib/postgresql/data
  
   server:
+    build:
+      context: .
+      dockerfile: Dockerfile
     env_file: .env
     image: covid:0.0.1
     restart: on-failure
+    ports:
+      - "8021:8000"
     volumes:
       - .:/code
+    depends_on:
+      - db
+      - redis
 
-  redis_main:
+  redis:
     image: redis:alpine
     restart: always
     container_name: fieldsight_redis_main
@@ -36,6 +44,8 @@ services:
     command: celery -A onadata worker -l Info -Q kobocat_queue
     environment:
       C_FORCE_ROOT: "yes"
-    envfile: .env
+    env_file: .env
     volumes:
       - .:/code
+    depends_on:
+      - server
