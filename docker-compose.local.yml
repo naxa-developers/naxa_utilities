@@ -6,7 +6,7 @@ services:
     container_name: postgres
     image: mdillon/postgis:11-alpine
     ports:
-     - "5432:5432"
+     - "5429:5432"
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
  
