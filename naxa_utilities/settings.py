@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'rest_framework.authtoken',
     'drf_yasg',
+    'django_celery_results',
     'api',
 
 ]
@@ -137,6 +138,9 @@ REST_FRAMEWORK = {
 }
 
 FCM_API_KEY = os.environ.get("FCM_API_KEY", "")
+HOTLINE = os.environ.get("HOTLINE", "9851255834, 9851255837, 9851255839 :8 AM – 8 PM: 1115:(6 AM – 10 PM)")
+
+CELERY_RESULT_BACKEND = 'django-db'
 
 try:
     from .local_setting import *
