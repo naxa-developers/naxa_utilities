@@ -424,7 +424,7 @@ class UserReportApi(viewsets.ModelViewSet):
         try:
             data = json.loads(travel_history)
             if not isinstance(data, dict):
-                data = {}
+                data = json.loads(data)
         except Exception as e:
             print(e)
             data = {}
