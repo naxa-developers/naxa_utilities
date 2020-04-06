@@ -419,9 +419,7 @@ class UserReportApi(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         temperature = serializer.data['temperature']
-        have_cough = serializer.data['have_cough']
         travel_history = serializer.data['travel_history']
-        print(travel_history, "raw")
         try:
             data = json.loads(travel_history)
             if not isinstance(data, dict):
