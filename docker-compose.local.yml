@@ -28,7 +28,7 @@ services:
   redis:
     image: redis:alpine
     restart: always
-    container_name: fieldsight_redis_main
+    container_name: redis_main
     volumes:
       - ./.backup/redis_main_data:/data
       - ./log/redis_main:/var/log/redis
@@ -41,7 +41,7 @@ services:
     image: covid:0.0.1
     restart: on-failure
     container_name: celery
-    command: celery -A naxa_utilities worker -l Info -Q covid_queue
+    command: celery -A naxa_utilities worker -l Info
     environment:
       C_FORCE_ROOT: "yes"
     env_file: .env
