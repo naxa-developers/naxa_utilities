@@ -2,14 +2,40 @@
 version: '3'
 
 services:
+  db:
+    container_name: postgres
+    image: mdillon/postgis:11-alpine
+    ports:
+     - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+ 
   server:
     env_file: .env
-    build:
-      context: .
-      dockerfile: Dockerfile
+    image: covid:0.0.1
+    restart: on-failure
     volumes:
       - .:/code
+
+  redis_main:
+    image: redis:alpine
+    restart: always
+    container_name: fieldsight_redis_main
+    volumes:
+      - ./.backup/redis_main_data:/data
+      - ./log/redis_main:/var/log/redis
     ports:
-      - "80:8000"
-    external_links:
-     - naxa_utilities:db
+      - 6379:6379
+    sysctls:
+      - net.core.somaxconn=2048
+  
+  celery:
+    image: covid:0.0.1
+    restart: on-failure
+    container_name: celery
+    command: celery -A onadata worker -l Info -Q kobocat_queue
+    environment:
+      C_FORCE_ROOT: "yes"
+    envfile: .env
+    volumes:
+      - .:/code
