@@ -366,7 +366,7 @@ class UserLocationApi(viewsets.ModelViewSet):
 
 
 class UserReportApi(viewsets.ModelViewSet):
-    queryset = UserReport.objects.all()
+    queryset = UserReport.objects.all().order_by("-update_date")
     serializer_class = UserReportSerializer
     small_serializer_class = SmallUserReportSerializer
     pagination_class = BigResultsSetPagination
