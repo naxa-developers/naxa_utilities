@@ -441,8 +441,7 @@ class UserReportApi(viewsets.ModelViewSet):
                   "परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा नजिकको कोभिड-१९ " \
                   "सम्बन्धि सेवाका लागी नेपाल सरकारद्वारा तोकिएको स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्।"
         result = "lesslikely"
-        if temperature >= 100 and have_cough and (has_travel_history or \
-                has_covid_contact):
+        if temperature >= 102 and (has_travel_history or has_covid_contact):
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
                       "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
                       "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
@@ -450,7 +449,7 @@ class UserReportApi(viewsets.ModelViewSet):
                       "स्वास्थ्य संस्थामा सम्पर्क गर्नुहोस्। त्यतिन्जेल सेल्फ क्वारेन्टाइनमा बस्नुहोस् र" \
                       " अन्य व्यक्तिहरुसँग सम्पर्क नगरि कोरोना संक्रमण फैलन नदिन सहयोग गर्नुहोस्।"
             result = "morelikely"
-        elif has_travel_history or has_covid_contact:
+        elif temperature >= 98 and (has_travel_history or has_covid_contact):
             message = "प्रारम्भिक परिक्षणमा तपाईले बुझाउनु भएका लक्षण वा यात्रा विवरणका " \
                       "आधारमा तपाईँलाई कोभीड-१९ को संक्रमण भएको हुनसक्ने देखिन्छ। " \
                       "कृपया कोभिड-१९ को थप परिक्षण गर्नको निम्ति निम्न सम्पर्क नम्बर वा" \
