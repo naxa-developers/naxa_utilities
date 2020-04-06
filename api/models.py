@@ -356,6 +356,9 @@ class UserReport(models.Model):
     update_date = models.DateTimeField(auto_now_add=True, null=True, blank=True)
     result = models.CharField(max_length=255, default="lesslikely")
 
+    class Meta:
+        ordering = ['-update_date']
+
     def save(self, *args, **kwargs):
         if self.location:
             self.lat = self.location.y
