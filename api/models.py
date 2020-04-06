@@ -381,12 +381,13 @@ class UserReport(models.Model):
 
     @property
     def get_result(self):
-        if self.temperature >= 100 and self.have_cough and (
-                self.has_travel_history or self.has_convid_contact):
-            return "morelikely"
-        elif self.has_travel_history or self.has_convid_contact:
-            return "likely"
+        if self.has_travel_history or self.has_convid_contact:
+            if self.temperature >= 102:
+                return "morelikely"
+            elif self.temperature >= 99:
+                return "likely"
         return "lesslikely"
+
 
 @receiver(post_save, sender=settings.AUTH_USER_MODEL)
 def create_auth_token(sender, instance=None, created=False, **kwargs):
