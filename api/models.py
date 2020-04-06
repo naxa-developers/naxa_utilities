@@ -459,3 +459,6 @@ class SuspectReport(models.Model):
     contact_no = models.CharField(max_length=255, blank=True, null=True)
     country = models.CharField(max_length=255, blank=True, null=True)
     transit = models.CharField(max_length=255, blank=True, null=True)
+
+
+

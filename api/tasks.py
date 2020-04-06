@@ -6,5 +6,6 @@ from api.utils import *
 
 @shared_task
 def add(x, y):
+    print("hello")
     return x + y
 
