@@ -68,7 +68,7 @@ federal_boundary = new L.geoJson.ajax(fed_url, {
         },
 
     onEachFeature: function (feature, layer) {
-          layer.bindPopup(feature.properties.name)
+          layer.bindPopup(feature.properties.pk)
 
                             style = ({
                               color: 'red',
