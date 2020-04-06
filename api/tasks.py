@@ -20,7 +20,7 @@ def add(x, y):
 
 
 @shared_task()
-def generate_user_report(pk, file_name):
+def generate_user_report(pk):
     time.sleep(5)
     task = CeleryTaskProgress.objects.get(pk=pk)
     task.status = 1
@@ -38,12 +38,8 @@ def generate_user_report(pk, file_name):
     df[['country_name', 'flight_name', 'transit_names']] = df.apply(
         travel_data, axis=1, result_type="expand")
     del df['travel_history']
-    directory = "userreport"
-    if not os.path.exists(settings.MEDIA_ROOT + directory):
-        os.makedirs(settings.MEDIA_ROOT + directory)
-    file_path = settings.MEDIA_ROOT +"/{}/{}.xlsx".format(directory, file_name)
-    df.to_excel()
-    task.file.name = "{}.xlsx".format(file_path)
+    df.to_excel(settings.MEDIA_ROOT + "/user_assessment_latest.xlsx")
+    task.file.name = settings.MEDIA_ROOT + "/user_assessment_latest.xlsx"
     task.status = 2
     task.save()
 

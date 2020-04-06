@@ -40,7 +40,7 @@ class Command(BaseCommand):
             df[['country_name', 'flight_name', 'transit_names']] = df.apply(
                 travel_data, axis=1, result_type="expand")
             del df['travel_history']
-            df.to_excel("output.xlsx")
+            df.to_excel("media/user_assessment_latest.xlsx")
         elif report_type == "facility":
             columns = ['id', 'province__province_id', 'province__name',
                        'district__district_id',

@@ -1,3 +1,5 @@
+import os
+
 import random
 from django.conf import settings
 from django.contrib.auth.models import User
@@ -382,22 +384,17 @@ class UserReportApi(viewsets.ModelViewSet):
         return self.small_serializer_class
 
     def list(self, request, *args, **kwargs):
-        content_type = self.request.query_params.get('content_type')
-        file_id = self.request.query_params.get('file_id')
-        if content_type == "file" and file_id is None:
+        action_type = self.request.query_params.get('action_type')
+        if action_type == "generate":
             task_obj = CeleryTaskProgress.objects.create(
                 user=self.request.user,
                 content_object=self.request.user,
                 task_type=0)
             if task_obj:
-                file_name = uuid4().hex
-                task = generate_user_report.delay(task_obj.pk, file_name)
+                task = generate_user_report.delay(task_obj.pk)
                 task_obj.task_id = task.id
                 task_obj.save()
-                return Response({'file_id': task_obj.id})
-        elif file_id is not None:
-            task_obj = CeleryTaskProgress.objects.get(pk=file_id)
-            return Response({'url': task_obj.file.url})
+                return Response({'message': 'File being updated'})
 
         data_type = self.request.query_params.get('data_type', "all")
         if data_type == "all":
