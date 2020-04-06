@@ -1,7 +1,9 @@
 import random
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db.models import Sum, Count, Max
 from rest_framework.decorators import api_view
+from uuid import uuid4
 
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
@@ -15,7 +17,9 @@ from .serializers import MedicalFacilitySerializer, \
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
-    GlobalData, MobileVersion, Device, SuspectReport
+    GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress
+from .tasks import generate_user_report
+
 from django_filters.rest_framework import DjangoFilterBackend
 
 from rest_framework import viewsets, pagination, views, status
@@ -46,7 +50,7 @@ class BigResultsSetPagination(pagination.PageNumberPagination):
     max_page_size = 1000
 
 
-NationalHotine = "9851255834, 9851255837, 9851255839 :8 AM – 8 PM: 1115:(6 AM – 10 PM)"
+NationalHotine = settings.HOTLINE
 
 
 # Create your views here.
@@ -378,8 +382,25 @@ class UserReportApi(viewsets.ModelViewSet):
         return self.small_serializer_class
 
     def list(self, request, *args, **kwargs):
+        content_type = self.request.query_params.get('content_type')
+        file_id = self.request.query_params.get('file_id')
+        if content_type == "file" and file_id is None:
+            task_obj = CeleryTaskProgress.objects.create(
+                user=self.request.user,
+                content_object=self.request.user,
+                task_type=0)
+            if task_obj:
+                file_name = uuid4().hex
+                task = generate_user_report.delay(task_obj.pk, file_name)
+                task_obj.task_id = task.id
+                task_obj.save()
+                return Response({'file_id': task_obj.id})
+        elif file_id is not None:
+            task_obj = CeleryTaskProgress.objects.get(pk=file_id)
+            return Response({'url': task_obj.file.url})
+
         data_type = self.request.query_params.get('data_type', "all")
-        if data_type =="all":
+        if data_type == "all":
             return super(UserReportApi, self).list(request, *args, **kwargs)
         queryset = self.filter_queryset(self.get_queryset().filter(
             result=data_type))

@@ -1,10 +1,14 @@
 import datetime
 import json
+from celery.result import AsyncResult
 from django.contrib.auth.models import Group
+from django.contrib.contenttypes.fields import GenericForeignKey
+from django.contrib.contenttypes.models import ContentType
 from django.contrib.gis.db import models
 from django.contrib.gis.geos import Point
 
 from django.conf import settings
+from django.contrib.postgres.fields import JSONField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from rest_framework.authtoken.models import Token
@@ -461,4 +465,77 @@ class SuspectReport(models.Model):
     transit = models.CharField(max_length=255, blank=True, null=True)
 
 
+class CeleryTaskProgress(models.Model):
+    Task_Status = (
+        (0, 'Pending'),
+        (1, 'In Progress'),
+        (2, 'Completed'),
+        (3, 'Failed'),
+    )
+    Task_Type = (
+        (0, 'Generate User Report xlsx'),
+    )
+    task_id = models.CharField(max_length=255, blank=True, null=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True, blank=True, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="tasks",
+                             blank=True, null=True, on_delete=models.SET_NULL)
+    file = models.FileField(
+        upload_to="celeryfiles", max_length=755, blank=True, null=True)
+    status = models.IntegerField(default=0, choices=Task_Status)
+    description = models.CharField(max_length=755, blank=True)
+    task_type = models.IntegerField(default=0, choices=Task_Type)
+    content_type = models.ForeignKey(ContentType, related_name='task_object',
+                                     blank=True, null=True, on_delete=models.SET_NULL)
+    object_id = models.IntegerField(blank=True, null=True)
+    content_object = GenericForeignKey('content_type', 'object_id')
+    other_fields = JSONField(default={})
+
+    def getname(self):
+        return self.file.name
+
+    def get_absolute_url(self):
+        if self.file:
+            return self.file.url
+        else:
+            return ""
+
+    def get_source_url(self):
+        try:
+            user = self.user
+        except settings.AUTH_USER_MODEL.DoesNotExist:
+            return None
+        else:
+            return user.get_absolute_url()
+
+    def get_source_name(self):
+        return self.user.first_name + ' ' + self.user.last_name
+
+    def get_event_url(self):
+        try:
+            return self.content_object.get_absolute_url()
+        except:
+            return None
+
+    def get_event_name(self):
+        try:
+            return self.content_object.getname()
+        except:
+            return None
+
+    def get_progress(self):
+        if self.status == 1:
+            if self.task_id:
+                task = AsyncResult(self.task_id)
+                data = task.result or task.state
+                return json.dumps(data)
+            else:
+                return None
+        return None
+
+    def __str__(self):
+        return str(self.pk) + " (" + str(self.task_type) + ") " + "-->" + str(
+            self.status) + \
+               "--->" + str(self.user) + " | Date_last_updated =" + \
+               str(self.date_updated) + " | Added_On =" + str(self.date_added)
 
