@@ -17,6 +17,7 @@ services:
     env_file: .env
     image: covid:0.0.1
     restart: on-failure
+    command: ./docker-entrypoint.prod.sh
     ports:
       - "8021:8000"
     volumes:
@@ -47,5 +48,3 @@ services:
     env_file: .env
     volumes:
       - .:/code
-    depends_on:
-      - server

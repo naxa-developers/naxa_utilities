@@ -18,3 +18,4 @@ xlrd==1.2.0
 celery==4.4.0
 redis==3.4.1
 django-celery-results==1.2.1
+uwsgi==2.0.18
