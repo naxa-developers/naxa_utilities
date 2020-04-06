@@ -41,7 +41,7 @@ services:
     image: covid:0.0.1
     restart: on-failure
     container_name: celery
-    command: celery -A onadata worker -l Info -Q kobocat_queue
+    command: celery -A naxa_utilities worker -l Info -Q covid_queue
     environment:
       C_FORCE_ROOT: "yes"
     env_file: .env
