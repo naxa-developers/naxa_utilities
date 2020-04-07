@@ -181,7 +181,15 @@ class MedicalApi2(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
+    def get_queryset(self):
+        municipality_id = self.request.query_params.get("municipality_id")
+        queryset = MedicalFacility.objects.all()
+        if municipality_id is not None:
+            queryset = MedicalFacility.objects.filter(
+                municipality=municipality_id)
+        return queryset
 
+    
 class MedicalCategoryApi(viewsets.ModelViewSet):
     queryset = MedicalFacilityCategory.objects.order_by('id')
     serializer_class = MedicalFacilityCategorySerializer
