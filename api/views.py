@@ -169,7 +169,7 @@ class MedicalApi2(viewsets.ModelViewSet):
     pagination_class = StandardResultsSetPagination
 
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['id', 'type']
+    filterset_fields = ['id', 'type', 'municipality', 'province', 'district']
 
     def get_permissions(self):
         """
