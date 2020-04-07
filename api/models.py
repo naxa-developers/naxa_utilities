@@ -157,6 +157,8 @@ class ProvinceData(models.Model):
 
     total_recovered = models.IntegerField("Total no Recovered निको भएको",
                                           null=True, blank=True, default=0)
+    in_quarantine = models.IntegerField("Total no Quarrantine",
+                                          null=True, blank=True, default=0)
     num_of_bed = models.IntegerField(null=True, blank=True, default=0)
     num_of_icu_bed = models.IntegerField(null=True, blank=True, default=0)
     occupied_icu_bed = models.IntegerField(null=True, blank=True, default=0)
@@ -492,7 +494,7 @@ class CeleryTaskProgress(models.Model):
                                      blank=True, null=True, on_delete=models.SET_NULL)
     object_id = models.IntegerField(blank=True, null=True)
     content_object = GenericForeignKey('content_type', 'object_id')
-    other_fields = JSONField(default={})
+    other_fields = JSONField(default=dict)
 
     def getname(self):
         return self.file.name
@@ -541,4 +543,13 @@ class CeleryTaskProgress(models.Model):
             self.status) + \
                "--->" + str(self.user) + " | Date_last_updated =" + \
                str(self.date_updated) + " | Added_On =" + str(self.date_added)
+
+
+class ApplicationStat(models.Model):
+    site_visits = models.IntegerField(default=0, blank=True, null=True)
+    app_downloads = models.IntegerField(default=0, blank=True, null=True)
+    self_assessments = models.IntegerField(default=0, blank=True, null=True)
+    user_reports = models.IntegerField(default=0, blank=True, null=True)
+    phone_calls_received = models.IntegerField(default=0, blank=True, null=True)
+
 

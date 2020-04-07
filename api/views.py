@@ -7,6 +7,7 @@ from django.db.models import Sum, Count, Max
 from rest_framework.decorators import api_view
 from uuid import uuid4
 
+from api.permission import IsFrontendUser
 from .serializers import MedicalFacilitySerializer, \
     MedicalFacilityCategorySerializer, MedicalFacilityTypeSerializer, \
     CaseSerializer, ProvinceSerializer, ProvinceDataSerializer, \
@@ -15,11 +16,12 @@ from .serializers import MedicalFacilitySerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
     DeviceSerializer, SuspectSerializer, SmallUserReportSerializer, \
-    NearUserSerializer
+    NearUserSerializer, ApplicationDataSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
-    GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress
+    GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress, \
+    ApplicationStat
 from .tasks import generate_user_report
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -67,7 +69,7 @@ class StatsAPI(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         """
         if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [IsFrontendUser]
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
@@ -275,16 +277,7 @@ class DistrictApi(viewsets.ModelViewSet):
 class ProvinceDataApi(viewsets.ModelViewSet):
     queryset = ProvinceData.objects.order_by('id')
     serializer_class = ProvinceDataSerializer
-
-    def get_permissions(self):
-        """
-        Instantiates and returns the list of permissions that this view requires.
-        """
-        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
-            permission_classes = [IsAuthenticated]
-        else:
-            permission_classes = [AllowAny]
-        return [permission() for permission in permission_classes]
+    permission_classes = [IsFrontendUser]
 
     def get_queryset(self):
         queryset = ProvinceData.objects.order_by('id')
@@ -361,8 +354,10 @@ class UserLocationApi(viewsets.ModelViewSet):
         """
         Instantiates and returns the list of permissions that this view requires.
         """
-        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
-            permission_classes = [IsAuthenticated]
+        if self.action == 'list' or self.action == 'destroy' or self.action == \
+                'update' or self.action == 'partial_update' or self.action ==\
+                'retrieve':
+            permission_classes = [IsFrontendUser]
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
@@ -415,7 +410,7 @@ class UserReportApi(viewsets.ModelViewSet):
         """
         if self.action in ['destroy', 'update', 'partial_update', 'list',
                            'get', 'retrieve']:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [IsFrontendUser]
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
@@ -544,7 +539,23 @@ class GlobalDataApi(viewsets.ModelViewSet):
         Instantiates and returns the list of permissions that this view requires.
         """
         if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
-            permission_classes = [IsAuthenticated]
+            permission_classes = [IsFrontendUser]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class ApplicationDataApi(viewsets.ModelViewSet):
+    queryset = ApplicationStat.objects.all()
+    serializer_class = ApplicationDataSerializer
+    permission_classes = [IsFrontendUser]
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsFrontendUser]
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
@@ -553,11 +564,20 @@ class GlobalDataApi(viewsets.ModelViewSet):
 class VersionDataApi(viewsets.ModelViewSet):
     queryset = MobileVersion.objects.all()
     serializer_class = MobileVersionSerializer
-    permission_classes = [AllowAny]
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsFrontendUser]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
 
 
 class NearFacilityViewSet(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsFrontendUser]
 
     def get(self, request):
         params = request.query_params
@@ -578,7 +598,7 @@ class NearFacilityViewSet(views.APIView):
 
 
 class SpaceGeojsonViewSet(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsFrontendUser]
 
     def get(self, request):
         serializers = serialize(
@@ -605,7 +625,7 @@ class SpaceGeojsonViewSet(views.APIView):
 
 
 class NearUserReportViewSet(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsFrontendUser]
 
     def get(self, request):
         params = request.query_params
@@ -628,7 +648,7 @@ class NearUserReportViewSet(views.APIView):
 
 
 class NearUserGeojsonViewSet(views.APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsFrontendUser]
 
     def get(self, request):
         serializers = serialize(

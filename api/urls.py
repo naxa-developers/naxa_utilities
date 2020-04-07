@@ -13,6 +13,7 @@ router.register(r'municipality', views.MunicipalityApi)
 router.register(r'province-data', views.ProvinceDataApi)
 router.register(r'positive-cases', views.CaseApi)
 router.register(r'global-data', views.GlobalDataApi)
+router.register(r'application-data', views.ApplicationDataApi)
 router.register(r'mobile-version', views.VersionDataApi)
 router.register(r'health-type', views.MedicalTypeApi)
 router.register(r'health-category', views.MedicalCategoryApi) # left bar
