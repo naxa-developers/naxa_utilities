@@ -1,8 +1,8 @@
 from django.contrib import admin
 from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, Province, ProvinceData, UserRole, \
-    Municipality, District, UserLocation, UserReport, DistrictData, MuniData,\
-    CovidCases, GlobalData, DeviceMessage
+    Municipality, District, UserLocation, UserReport, DistrictData, MuniData, \
+    CovidCases, GlobalData, DeviceMessage, ApplicationStat
 
 from django.contrib.gis.admin import OSMGeoAdmin
 
@@ -12,6 +12,7 @@ admin.site.register(MedicalFacilityCategory)
 admin.site.register(MedicalFacilityType)
 admin.site.register(Province)
 admin.site.register(GlobalData)
+admin.site.register(ApplicationStat)
 admin.site.register(DeviceMessage)
 
 
