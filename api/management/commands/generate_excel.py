@@ -58,5 +58,5 @@ class Command(BaseCommand):
                        'long']
             query = MedicalFacility.objects.all().values(*columns)
             df = pd.DataFrame(query, columns=columns)
-            df.to_excel("medical_facility.xlsx")
+            df.to_excel("media/medical_facility.xlsx")
 
