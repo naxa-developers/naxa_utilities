@@ -50,7 +50,6 @@ coverage.xml
 # Pyre type checker
 
 # Docker
-docker-compose.yml
 postgres-data
 Dockerfile
 
