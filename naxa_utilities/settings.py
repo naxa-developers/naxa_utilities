@@ -142,7 +142,30 @@ HOTLINE = os.environ.get("HOTLINE", "9851255834, 9851255837, 9851255839 :8 AM â€
 
 CELERY_RESULT_BACKEND = 'django-db'
 
-try:
-    from .local_setting import *
-except Exception as e:
-    pass
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': os.environ.get("DATABASE_NAME", ""),
+        'USER': os.environ.get("DATABASE_USER", ''),
+        "PASSWORD": os.environ.get("DATABASE_PASSWORD", ''),
+        'HOST': os.environ.get("DATABASE_HOST", "localhost"),
+        'PORT': os.environ.get("DATABASE_PORT", 5432)
+    }
+}
+
+DEBUG = True
+
+ALLOWED_HOSTS = ['*']
+
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_USE_TLS = True
+# EMAIL_HOST = 'smtp.gmail.com'
+# EMAIL_HOST_USER = '**@gmail.com'
+# EMAIL_HOST_PASSWORD = '***'
+# EMAIL_PORT = 587
+#
+LOGIN_URL = '/admin/login/'
+LOGOUT_URL = '/admin/logout/'
+LOGOUT_REDIRECT_URL = '/admin/logout/'
+
+CORS_ORIGIN_ALLOW_ALL = True

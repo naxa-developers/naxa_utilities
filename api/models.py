@@ -479,6 +479,7 @@ class CeleryTaskProgress(models.Model):
     )
     Task_Type = (
         (0, 'Generate User Report xlsx'),
+        (1, 'Generate Facility Report xlsx'),
     )
     task_id = models.CharField(max_length=255, blank=True, null=True)
     date_added = models.DateTimeField(auto_now_add=True)

@@ -22,7 +22,7 @@ from .models import MedicalFacility, MedicalFacilityType, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
     GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress, \
     ApplicationStat
-from .tasks import generate_user_report
+from .tasks import generate_user_report, generate_facility_report
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -181,13 +181,28 @@ class MedicalApi2(viewsets.ModelViewSet):
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
 
-    def get_queryset(self):
-        municipality_id = self.request.query_params.get("municipality_id")
-        queryset = MedicalFacility.objects.all()
-        if municipality_id is not None:
-            queryset = MedicalFacility.objects.filter(
-                municipality=municipality_id)
-        return queryset
+    def list(self, request, *args, **kwargs):
+        action_type = self.request.query_params.get('action_type')
+        if action_type == "generate":
+            authenticated = bool(request.user and request.user.is_authenticated)
+            if not authenticated:
+                return Response({{'message': 'Permission denied'}},
+                                status=status.HTTP_403_FORBIDDEN)
+            frontend_group = request.user.roles.filter(
+                group__name="FrontEnd").exists()
+            if not frontend_group:
+                return Response({{'message': 'Permission denied'}},
+                         status=status.HTTP_403_FORBIDDEN)
+            task_obj = CeleryTaskProgress.objects.create(
+                user=self.request.user,
+                content_object=self.request.user,
+                task_type=1)
+            if task_obj:
+                task = generate_facility_report.delay(task_obj.pk)
+                task_obj.task_id = task.id
+                task_obj.save()
+                return Response({'message': 'File being updated'})
+        return super(MedicalApi2, self).list(request, *args, **kwargs)
 
     
 class MedicalCategoryApi(viewsets.ModelViewSet):
@@ -287,6 +302,9 @@ class ProvinceDataApi(viewsets.ModelViewSet):
     serializer_class = ProvinceDataSerializer
     permission_classes = [IsFrontendUser]
 
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['province_id']
+
     def get_queryset(self):
         queryset = ProvinceData.objects.order_by('id')
         province_id = self.request.query_params.get("province_id")
@@ -298,6 +316,9 @@ class ProvinceDataApi(viewsets.ModelViewSet):
 class DistrictDataApi(viewsets.ModelViewSet):
     queryset = DistrictData.objects.order_by('id')
     serializer_class = DistrictDataSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['province_id', 'district_id']
 
     def get_permissions(self):
         """
@@ -313,6 +334,9 @@ class DistrictDataApi(viewsets.ModelViewSet):
 class MuncDataApi(viewsets.ModelViewSet):
     queryset = MuniData.objects.order_by('id')
     serializer_class = MuncDataSerializer
+
+    filter_backends = [DjangoFilterBackend]
+    filterset_fields = ['province_id', 'district_id', 'municipality_id']
 
     def get_permissions(self):
         """
@@ -389,6 +413,15 @@ class UserReportApi(viewsets.ModelViewSet):
     def list(self, request, *args, **kwargs):
         action_type = self.request.query_params.get('action_type')
         if action_type == "generate":
+            authenticated = bool(request.user and request.user.is_authenticated)
+            if not authenticated:
+                return Response({{'message': 'Permission denied'}},
+                                status=status.HTTP_403_FORBIDDEN)
+            frontend_group = request.user.roles.filter(
+                group__name="FrontEnd").exists()
+            if not frontend_group:
+                return Response({{'message': 'Permission denied'}},
+                                status=status.HTTP_403_FORBIDDEN)
             task_obj = CeleryTaskProgress.objects.create(
                 user=self.request.user,
                 content_object=self.request.user,

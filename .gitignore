@@ -62,6 +62,7 @@ docker-compose.yml
 Dockerfile.postgis
 postgis_env
 .backup/
-
+covid.log
+./covid.log
 
 
