@@ -12,13 +12,14 @@ services:
  
   server:
     env_file: .env
-    image: naxa/covid:1.0.3
+    image: naxa/covid:1.0.4
     restart: on-failure
     command: ./docker-entrypoint.prod.sh
     ports:
       - "8021:8000"
     volumes:
       - ./media:/code/media
+      - ./static:/code/static
 #      - .:/code
     depends_on:
       - db
@@ -37,7 +38,7 @@ services:
       - net.core.somaxconn=2048
   
   celery:
-    image: naxa/covid:1.0.3
+    image: naxa/covid:1.0.4
     restart: on-failure
     container_name: celery
     command: celery -A naxa_utilities worker -l Info

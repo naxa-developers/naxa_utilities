@@ -63,5 +63,6 @@ postgis_env
 covid.log
 ./covid.log
 media/*
+service_account.json
 
 

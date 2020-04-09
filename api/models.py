@@ -194,8 +194,15 @@ class DistrictData(models.Model):
     num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
     occupied_isolation_bed = models.IntegerField(null=True, blank=True,
                                                  default=0)
+    total_samples_pending = models.IntegerField("Total No of Pending Cases ("
+                                                "Test Pending)",
+                                                null=True,
+                                                blank=True, default=0)
     total_tested = models.IntegerField(null=True, blank=True, default=0)
     total_positive = models.IntegerField(null=True, blank=True, default=0)
+    total_negative = models.IntegerField(null=True, blank=True, default=0)
+    total_recovered = models.IntegerField("Total no Recovered निको भएको",
+                                          null=True, blank=True, default=0)
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
@@ -229,8 +236,15 @@ class MuniData(models.Model):
     num_of_isolation_bed = models.IntegerField(null=True, blank=True, default=0)
     occupied_isolation_bed = models.IntegerField(null=True, blank=True,
                                                  default=0)
+    total_samples_pending = models.IntegerField("Total No of Pending Cases ("
+                                                "Test Pending)",
+                                                null=True,
+                                                blank=True, default=0)
     total_tested = models.IntegerField(null=True, blank=True, default=0)
     total_positive = models.IntegerField(null=True, blank=True, default=0)
+    total_negative = models.IntegerField(null=True, blank=True, default=0)
+    total_recovered = models.IntegerField("Total no Recovered निको भएको",
+                                          null=True, blank=True, default=0)
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
