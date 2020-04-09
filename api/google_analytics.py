@@ -79,7 +79,8 @@ def print_results(results):
 def main():
     # Define the auth scopes to request.
     scope = 'https://www.googleapis.com/auth/analytics.readonly'
-    key_file_location = './service_account.json'
+    key_file_location = '/home/awemulya/work/naxa/naxa_utilities' \
+                        '/service_account.json'
 
     # Authenticate and construct service.
     service = get_service(

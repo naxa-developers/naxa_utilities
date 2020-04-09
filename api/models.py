@@ -198,6 +198,8 @@ class DistrictData(models.Model):
                                                 "Test Pending)",
                                                 null=True,
                                                 blank=True, default=0)
+    in_quarantine = models.IntegerField("Total no Quarrantine",
+                                        null=True, blank=True, default=0)
     total_tested = models.IntegerField(null=True, blank=True, default=0)
     total_positive = models.IntegerField(null=True, blank=True, default=0)
     total_negative = models.IntegerField(null=True, blank=True, default=0)
@@ -245,6 +247,8 @@ class MuniData(models.Model):
     total_negative = models.IntegerField(null=True, blank=True, default=0)
     total_recovered = models.IntegerField("Total no Recovered निको भएको",
                                           null=True, blank=True, default=0)
+    in_quarantine = models.IntegerField("Total no Quarrantine",
+                                        null=True, blank=True, default=0)
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     active = models.BooleanField(default=True)
