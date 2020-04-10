@@ -76,8 +76,8 @@ def print_results(results):
         visits = results.get('rows')[0][0]
         print('Total Sessions:', visits)
         print('Total Sessions:', visits)
-        self_assessments = UserLocation.objects.count()
-        user_reports = UserReport.objects.count()
+        user_reports = UserLocation.objects.count()
+        self_assessments = UserReport.objects.count()
         ApplicationStat.objects.all().update(
             site_visits=visits,
             self_assessments=self_assessments,
