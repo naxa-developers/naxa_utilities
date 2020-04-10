@@ -1,7 +1,10 @@
 """A simple example of how to access the Google Analytics API."""
 
 from apiclient.discovery import build
+from django.conf import settings
 from oauth2client.service_account import ServiceAccountCredentials
+
+from api.models import ApplicationStat
 
 
 def get_service(api_name, api_version, scopes, key_file_location):
@@ -69,8 +72,11 @@ def get_results(service, profile_id):
 def print_results(results):
     # Print data nicely for the user.
     if results:
-        print('View (Profile):', results.get('profileInfo').get('profileName'))
-        print('Total Sessions:', results.get('rows')[0][0])
+        # print('View (Profile):', results.get('profileInfo').get('profileName'))
+        visits = results.get('rows')[0][0]
+        print('Total Sessions:', visits)
+        ApplicationStat.objects.all().update(site_visits=visits)
+        print('Site visits updated')
 
     else:
         print('No results found')
@@ -79,8 +85,7 @@ def print_results(results):
 def main():
     # Define the auth scopes to request.
     scope = 'https://www.googleapis.com/auth/analytics.readonly'
-    key_file_location = '/home/awemulya/work/naxa/naxa_utilities' \
-                        '/service_account.json'
+    key_file_location = settings.CREDENTIALS_JSON
 
     # Authenticate and construct service.
     service = get_service(
@@ -92,6 +97,3 @@ def main():
     profile_id = get_first_profile_id(service)
     print_results(get_results(service, profile_id))
 
-
-if __name__ == '__main__':
-    main()

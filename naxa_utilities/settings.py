@@ -169,3 +169,18 @@ LOGOUT_URL = '/admin/logout/'
 LOGOUT_REDIRECT_URL = '/admin/logout/'
 
 CORS_ORIGIN_ALLOW_ALL = True
+
+CELERY_TASK_DEFAULT_QUEUE = "default"
+
+CREDENTIALS_JSON = os.environ.get("CREDENTIALS_JSON", "./service_account.json")
+
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    "update_visits": {
+        "task": "api.tasks.sync_app_data",
+        "schedule": crontab(minute='*/30'),
+        'options': {'queue': 'beat'}
+
+    }
+}

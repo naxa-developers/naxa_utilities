@@ -72,3 +72,7 @@ def generate_facility_report(pk):
     task.save()
 
 
+@shared_task()
+def sync_app_data():
+    from api.google_analytics import main
+    main()

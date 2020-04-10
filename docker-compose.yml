@@ -41,9 +41,35 @@ services:
     image: naxa/covid:1.0.6
     restart: on-failure
     container_name: celery
-    command: celery -A naxa_utilities worker -l Info
+    command: celery -A naxa_utilities worker -l Info -Q default
     environment:
       C_FORCE_ROOT: "yes"
     env_file: .env
     volumes:
       - ./media:/code/media
+
+  celery_beat_covid:
+    image: naxa/covid:1.0.6
+    restart: on-failure
+    container_name: celery_beat_covid
+    command: celery -A naxa_utilities beat
+    environment:
+      C_FORCE_ROOT: "yes"
+    env_file: .env
+    volumes:
+      - ./media:/code/media
+      - ./service_account.json:/code/service_account.json
+
+
+  worker_celery_beat_covid:
+    image: naxa/covid:1.0.6
+    restart: on-failure
+    container_name: worker_celery_beat_covid
+    command: celery -A naxa_utilities worker -l Info -Q beat
+    environment:
+      C_FORCE_ROOT: "yes"
+    env_file: .env
+    volumes:
+      - ./media:/code/media
+      - ./service_account.json:/code/service_account.json
+
