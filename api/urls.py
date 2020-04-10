@@ -26,6 +26,7 @@ router.register(r'user-report', views.UserReportApi)
 router.register(r'suspect-report', views.SuspectApi)
 router.register(r'age-data', views.AgeGroupDataApi)
 router.register(r'device', views.DeviceApi)
+router.register(r'faq', views.FAQApi)
 
 urlpatterns = [
     path('', include(router.urls)),

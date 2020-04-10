@@ -572,3 +572,16 @@ class ApplicationStat(models.Model):
     phone_calls_received = models.IntegerField(default=0, blank=True, null=True)
 
 
+class FAQ(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="faq",
+                            blank=True, null=True, on_delete=models.SET_NULL)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+
+
+
+

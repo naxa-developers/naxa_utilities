@@ -16,12 +16,12 @@ from .serializers import MedicalFacilitySerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
     DeviceSerializer, SuspectSerializer, SmallUserReportSerializer, \
-    NearUserSerializer, ApplicationDataSerializer
+    NearUserSerializer, ApplicationDataSerializer, FAQSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
     GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress, \
-    ApplicationStat
+    ApplicationStat, FAQ
 from .tasks import generate_user_report, generate_facility_report
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -600,6 +600,15 @@ class ApplicationDataApi(viewsets.ModelViewSet):
         else:
             permission_classes = [AllowAny]
         return [permission() for permission in permission_classes]
+
+
+class FAQApi(viewsets.ModelViewSet):
+    queryset = FAQ.objects.all()
+    serializer_class = FAQSerializer
+    permission_classes = [IsFrontendUser]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
 
 class VersionDataApi(viewsets.ModelViewSet):
