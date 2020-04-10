@@ -22,7 +22,7 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SECRET_KEY = 'j964770!a#auu4o+($fu)&c7s%+^q!cjudcyrzz-($%7os!n$1'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 # Application definition
 
@@ -153,7 +153,7 @@ DATABASES = {
     }
 }
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
@@ -170,7 +170,10 @@ LOGOUT_REDIRECT_URL = '/admin/logout/'
 
 CORS_ORIGIN_ALLOW_ALL = True
 
+CELERY_DEFAULT_QUEUE = "default"
 CELERY_TASK_DEFAULT_QUEUE = "default"
+TASK_DEFAULT_QUEUE = "default"
+task_default_queue = "default"
 
 CREDENTIALS_JSON = os.environ.get("CREDENTIALS_JSON", "./service_account.json")
 

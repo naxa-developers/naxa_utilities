@@ -198,7 +198,9 @@ class MedicalApi2(viewsets.ModelViewSet):
                 content_object=self.request.user,
                 task_type=1)
             if task_obj:
-                task = generate_facility_report.delay(task_obj.pk)
+                task = generate_facility_report.apply_async(
+                    (task_obj.id,), queue="default")
+
                 task_obj.task_id = task.id
                 task_obj.save()
                 return Response({'message': 'File being updated'})
@@ -427,7 +429,9 @@ class UserReportApi(viewsets.ModelViewSet):
                 content_object=self.request.user,
                 task_type=0)
             if task_obj:
-                task = generate_user_report.delay(task_obj.pk)
+                task = generate_user_report.apply_async((task_obj.pk,),
+                                                        queue="default")
+
                 task_obj.task_id = task.id
                 task_obj.save()
                 return Response({'message': 'File being updated'})

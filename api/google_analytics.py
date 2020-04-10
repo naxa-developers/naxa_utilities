@@ -4,7 +4,7 @@ from apiclient.discovery import build
 from django.conf import settings
 from oauth2client.service_account import ServiceAccountCredentials
 
-from api.models import ApplicationStat
+from api.models import ApplicationStat, UserLocation, UserReport
 
 
 def get_service(api_name, api_version, scopes, key_file_location):
@@ -75,7 +75,14 @@ def print_results(results):
         # print('View (Profile):', results.get('profileInfo').get('profileName'))
         visits = results.get('rows')[0][0]
         print('Total Sessions:', visits)
-        ApplicationStat.objects.all().update(site_visits=visits)
+        print('Total Sessions:', visits)
+        self_assessments = UserLocation.objects.count()
+        user_reports = UserReport.objects.count()
+        ApplicationStat.objects.all().update(
+            site_visits=visits,
+            self_assessments=self_assessments,
+            user_reports=user_reports
+        )
         print('Site visits updated')
 
     else:
