@@ -614,6 +614,16 @@ class FAQApi(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsFrontendUser]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
 
 class VersionDataApi(viewsets.ModelViewSet):
     queryset = MobileVersion.objects.all()
