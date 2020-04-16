@@ -20,7 +20,7 @@ services:
     volumes:
       - ./media:/code/media
       - ./static:/code/static
-#      - .:/code
+      - .:/code
     depends_on:
       - db
       - redis

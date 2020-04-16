@@ -583,5 +583,19 @@ class FAQ(models.Model):
         ordering = ['-updated_at']
 
 
+class News(models.Model):
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="news",
+                            blank=True, null=True, on_delete=models.SET_NULL)
+    image = models.FileField(upload_to='uploads/',)
+    related_link = models.CharField(max_length=255, blank=True, null=True)
+    status = models.BooleanField(default=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-updated_at']
+
+
 
 

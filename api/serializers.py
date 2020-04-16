@@ -5,7 +5,7 @@ from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
     Municipality, UserRole, UserLocation, UserReport, AgeGroupData, \
     DistrictData, MuniData, GlobalData, MobileVersion, Device, SuspectReport, \
-    ApplicationStat, FAQ
+    ApplicationStat, FAQ, News
 
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
@@ -250,7 +250,14 @@ class FAQSerializer(serializers.ModelSerializer):
     class Meta:
         model = FAQ
         fields = "__all__"
-        
+
+
+class NewsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = News
+        fields = "__all__"
+
 
 
 

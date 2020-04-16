@@ -16,12 +16,12 @@ from .serializers import MedicalFacilitySerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
     DeviceSerializer, SuspectSerializer, SmallUserReportSerializer, \
-    NearUserSerializer, ApplicationDataSerializer, FAQSerializer
+    NearUserSerializer, ApplicationDataSerializer, FAQSerializer, NewsSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
     GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress, \
-    ApplicationStat, FAQ
+    ApplicationStat, FAQ, News
 from .tasks import generate_user_report, generate_facility_report
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -609,6 +609,25 @@ class ApplicationDataApi(viewsets.ModelViewSet):
 class FAQApi(viewsets.ModelViewSet):
     queryset = FAQ.objects.all()
     serializer_class = FAQSerializer
+    permission_classes = [IsFrontendUser]
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
+
+    def get_permissions(self):
+        """
+        Instantiates and returns the list of permissions that this view requires.
+        """
+        if self.action == 'create' or self.action == 'destroy' or self.action == 'update' or self.action == 'partial_update':
+            permission_classes = [IsFrontendUser]
+        else:
+            permission_classes = [AllowAny]
+        return [permission() for permission in permission_classes]
+
+
+class NewsApi(viewsets.ModelViewSet):
+    queryset = News.objects.all()
+    serializer_class = NewsSerializer
     permission_classes = [IsFrontendUser]
 
     def perform_create(self, serializer):
