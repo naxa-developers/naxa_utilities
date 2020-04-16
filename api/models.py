@@ -103,6 +103,9 @@ class MedicalFacility(models.Model):
     total_death = models.IntegerField(null=True, blank=True, default=0)
     total_in_isolation = models.IntegerField(null=True, blank=True, default=0)
     hlcit_code = models.CharField(max_length=63, null=True, blank=True)
+    has_ambulance = models.BooleanField(default=False)
+    no_ambulance = models.IntegerField(null=True, blank=True,
+                                                 default=0)
     remarks = models.TextField(blank=True)
     location = models.PointField(srid=4326, blank=True, null=True)
     lat = models.FloatField(null=True, blank=True, default=0)

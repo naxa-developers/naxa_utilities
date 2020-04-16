@@ -33,7 +33,7 @@ class Command(BaseCommand):
                        'diarrahoe', 'vomit', 'runny_nose', 'address',
                        'contact_no',
                        'symptoms', 'has_convid_contact',
-                       'has_travel_history', 'result', 'travel_history']
+                       'has_travel_history', 'result', 'travel_history', 'update_date']
 
             query = UserReport.objects.all().values(*columns)
             df = pd.DataFrame(query, columns=columns)
