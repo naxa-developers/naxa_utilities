@@ -60,6 +60,7 @@ class Municipality(models.Model):
     district = models.ForeignKey(District, on_delete=models.CASCADE,
                                  related_name='municipalities',
                                  blank=True, null=True)
+    geom = models.MultiPolygonField(srid=4326, blank=True, null=True)
 
     def __str__(self):
         return self.name
@@ -587,7 +588,14 @@ class FAQ(models.Model):
 
 
 class News(models.Model):
+    CATEGORIES = [
+        ("News", "News"),
+        ("Press Release", "Press Release"),
+        ("Situation Report", "Situation Report"),
+    ]
     title = models.CharField(max_length=255)
+    category = models.CharField(max_length=255, default="News",
+                                choices=CATEGORIES)
     content = models.TextField()
     user = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="news",
                             blank=True, null=True, on_delete=models.SET_NULL)
