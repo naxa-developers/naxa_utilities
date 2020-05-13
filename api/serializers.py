@@ -5,8 +5,13 @@ from .models import MedicalFacility, MedicalFacilityCategory, \
     MedicalFacilityType, CovidCases, Province, ProvinceData, District, \
     Municipality, UserRole, UserLocation, UserReport, AgeGroupData, \
     DistrictData, MuniData, GlobalData, MobileVersion, Device, SuspectReport, \
-    ApplicationStat, FAQ, News
+    ApplicationStat, FAQ, News,DeviceMessage
 
+
+class DeviceMessageSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = DeviceMessage
+        fields = ('type', 'title','message','url')
 
 class MedicalFacilityCategorySerializer(serializers.ModelSerializer):
     type = serializers.SerializerMethodField()
