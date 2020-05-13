@@ -16,12 +16,13 @@ from .serializers import MedicalFacilitySerializer, \
     SpaceSerializer, DistrictDataSerializer, MuncDataSerializer, \
     GlobalDataSerializer, MobileVersionSerializer, UserSerializer, \
     DeviceSerializer, SuspectSerializer, SmallUserReportSerializer, \
-    NearUserSerializer, ApplicationDataSerializer, FAQSerializer, NewsSerializer
+    NearUserSerializer, ApplicationDataSerializer, FAQSerializer, NewsSerializer,DeviceMessageSerializer
 from .models import MedicalFacility, MedicalFacilityType, \
     MedicalFacilityCategory, CovidCases, Province, ProvinceData, Municipality, \
     District, UserLocation, UserReport, AgeGroupData, DistrictData, MuniData, \
     GlobalData, MobileVersion, Device, SuspectReport, CeleryTaskProgress, \
-    ApplicationStat, FAQ, News
+    ApplicationStat, FAQ, News,Device,DeviceMessage
+
 from .tasks import generate_user_report, generate_facility_report
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -58,6 +59,14 @@ NationalHotine = settings.HOTLINE
 
 
 # Create your views here.
+class DeviceMessagesApi(viewsets.ModelViewSet):
+    queryset = DeviceMessage.objects.all()
+    serializer_class = DeviceMessageSerializer
+    pagination_class = StandardResultsSetPagination
+
+    def list(self, request, *args, **kwargs):
+        return super(DeviceMessagesApi, self).list(request, *args, **kwargs)
+
 class StatsAPI(viewsets.ModelViewSet):
     queryset = ProvinceData.objects.filter(active=True)
     serializer_class = ProvinceDataSerializer
