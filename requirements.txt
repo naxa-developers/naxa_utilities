@@ -1,5 +1,5 @@
 Django==2.2.10
-djangorestframework==3.11.0
+djangorestframework==3.11.2
 pytest==5.2.0
 pytest-django==3.5.1
 pytest-cov==2.7.1
