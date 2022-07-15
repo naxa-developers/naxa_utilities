@@ -17,7 +17,7 @@ openpyxl==3.0.3
 xlrd==1.2.0
 celery==4.4.0
 redis==3.4.1
-django-celery-results==1.2.1
+django-celery-results==2.4.0
 uwsgi==2.0.18
 google-api-python-client==1.8.0
 oauth2client==4.1.3
